@@ -57,7 +57,7 @@ public class DeferredResultMethodReturnValueHandler implements HandlerMethodRetu
 		}
 
 		DeferredResult<?> result;
-
+		/*DeferredResult,ListenableFuture,CompletionStage*/
 		if (returnValue instanceof DeferredResult) {
 			result = (DeferredResult<?>) returnValue;
 		}
