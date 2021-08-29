@@ -38,7 +38,7 @@ import org.springframework.web.util.UrlPathHelper;
  * <p>If the file extension is not found in the explicit registrations provided
  * to the constructor, the {@link MediaTypeFactory} is used as a fallback
  * mechanism.
- *
+ * 如果在提供的显式注册中没有找到文件扩展名到构造函数，
  * @author Rossen Stoyanchev
  * @since 3.2
  * @deprecated as of 5.2.4. See class-level note in

@@ -102,6 +102,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		Assert.notEmpty(converters, "'messageConverters' must not be empty");
 		this.messageConverters = converters;
 		this.allSupportedMediaTypes = getAllSupportedMediaTypes(converters);
+		// 构建请求响应通知链
 		this.advice = new RequestResponseBodyAdviceChain(requestResponseBodyAdvice);
 	}
 
@@ -170,8 +171,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		boolean noContentType = false;
 		try {
 			contentType = inputMessage.getHeaders().getContentType();
-		}
-		catch (InvalidMediaTypeException ex) {
+		}catch (InvalidMediaTypeException ex) {
 			throw new HttpMediaTypeNotSupportedException(ex.getMessage());
 		}
 		if (contentType == null) {

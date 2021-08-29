@@ -132,6 +132,7 @@ public class InternalResourceView extends AbstractUrlBasedView {
 
 	/**
 	 * Render the internal resource given the specified model.
+	 * 呈现指定模型的内部资源。
 	 * This includes setting the model as request attributes.
 	 */
 	@Override
@@ -161,9 +162,7 @@ public class InternalResourceView extends AbstractUrlBasedView {
 				logger.debug("Including [" + getUrl() + "]");
 			}
 			rd.include(request, response);
-		}
-
-		else {
+		}else {
 			// Note: The forwarded resource is supposed to determine the content type itself.
 			if (logger.isDebugEnabled()) {
 				logger.debug("Forwarding to [" + getUrl() + "]");

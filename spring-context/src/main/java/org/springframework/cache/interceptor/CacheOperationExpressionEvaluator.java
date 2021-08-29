@@ -47,11 +47,13 @@ class CacheOperationExpressionEvaluator extends CachedExpressionEvaluator {
 
 	/**
 	 * Indicate that there is no result variable.
+	 * 指示没有结果变量。
 	 */
 	public static final Object NO_RESULT = new Object();
 
 	/**
 	 * Indicate that the result variable cannot be used at all.
+	 * 指示根本不能使用result变量
 	 */
 	public static final Object RESULT_UNAVAILABLE = new Object();
 

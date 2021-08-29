@@ -101,12 +101,14 @@ public class ParameterizableViewController extends AbstractController {
 	/**
 	 * Configure the HTTP status code that this controller should set on the
 	 * response.
+	 * 配置此控制器应设置的HTTP状态码响应。当设置视图名称为“redirect:”，就不必设置这个属性了
 	 * <p>When a "redirect:" prefixed view name is configured, there is no need
 	 * to set this property since RedirectView will do that. However this property
 	 * may still be used to override the 3xx status code of {@code RedirectView}.
 	 * For full control over redirecting provide a {@code RedirectView} instance.
 	 * <p>If the status code is 204 and no view is configured, the request is
 	 * fully handled within the controller.
+	 * 如果状态码为204并且没有视图配置。请求将完全在这个控制器中进行处理
 	 * @since 4.1
 	 */
 	public void setStatusCode(@Nullable HttpStatus statusCode) {
@@ -136,6 +138,7 @@ public class ParameterizableViewController extends AbstractController {
 
 	/**
 	 * Whether the request is fully handled within the controller.
+	 * 请求是否在控制器内被完全处理。
 	 */
 	public boolean isStatusOnly() {
 		return this.statusOnly;
@@ -151,31 +154,31 @@ public class ParameterizableViewController extends AbstractController {
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-
+		// 获取设置的视图名
 		String viewName = getViewName();
 
 		if (getStatusCode() != null) {
+			// 状态码是否设置的重定向
 			if (getStatusCode().is3xxRedirection()) {
 				request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, getStatusCode());
-			}
-			else {
+			}else {
 				response.setStatus(getStatusCode().value());
+				// 响应状态码设置为204 并且没有视图设置
 				if (getStatusCode().equals(HttpStatus.NO_CONTENT) && viewName == null) {
 					return null;
 				}
 			}
 		}
-
+		// 表示请求是否在此控制器中进行处理
 		if (isStatusOnly()) {
 			return null;
 		}
-
+		// 返回ModelAndView
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addAllObjects(RequestContextUtils.getInputFlashMap(request));
 		if (viewName != null) {
 			modelAndView.setViewName(viewName);
-		}
-		else {
+		}else {
 			modelAndView.setView(getView());
 		}
 		return modelAndView;

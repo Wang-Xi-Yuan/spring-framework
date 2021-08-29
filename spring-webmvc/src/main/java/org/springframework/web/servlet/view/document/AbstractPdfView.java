@@ -33,7 +33,7 @@ import org.springframework.web.servlet.view.AbstractView;
 /**
  * Abstract superclass for PDF views. Application-specific view classes
  * will extend this class. The view will be held in the subclass itself,
- * not in a template.
+ * not in a template. 视图将保存在子类本身中，不在模板中。
  *
  * <p>This view implementation uses Bruno Lowagie's
  * <a href="https://www.lowagie.com/iText">iText</a> API.
@@ -41,7 +41,7 @@ import org.springframework.web.servlet.view.AbstractView;
  * <a href="https://github.com/LibrePDF/OpenPDF">OpenPDF</a>.
  * <b>We strongly recommend OpenPDF since it is actively maintained
  * and fixes an important vulnerability for untrusted PDF content.</b>
- *
+ * 我们强烈推荐OpenPDF，因为它是积极维护的并修复不受信任的PDF内容的一个重要漏洞
  * <p>Note: Internet Explorer requires a ".pdf" extension, as it doesn't
  * always respect the declared content type.
  *
@@ -171,6 +171,8 @@ public abstract class AbstractPdfView extends AbstractView {
 	 * Subclasses must implement this method to build an iText PDF document,
 	 * given the model. Called between {@code Document.open()} and
 	 * {@code Document.close()} calls.
+	 * 子类必须实现此方法以构建iText PDF文档，给定模型。
+	 *
 	 * <p>Note that the passed-in HTTP response is just supposed to be used
 	 * for setting cookies or other HTTP headers. The built PDF document itself
 	 * will automatically get written to the response after this method returns.

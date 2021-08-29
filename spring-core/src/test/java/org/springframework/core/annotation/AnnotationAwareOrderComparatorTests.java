@@ -47,6 +47,16 @@ class AnnotationAwareOrderComparatorTests {
 	}
 
 	@Test
+	void sortInstances2() {
+		List<Object> list = new ArrayList<>();
+		list.add(new B());
+		list.add(new E());
+		AnnotationAwareOrderComparator.sort(list);
+		assertThat(list.get(0) instanceof B).isTrue();
+		assertThat(list.get(1) instanceof E).isTrue();
+	}
+
+	@Test
 	void sortInstancesWithPriority() {
 		List<Object> list = new ArrayList<>();
 		list.add(new B2());
@@ -117,6 +127,13 @@ class AnnotationAwareOrderComparatorTests {
 
 	@Order(2)
 	private static class B {
+	}
+
+	@Order(3)
+	private static interface D {
+	}
+
+	private static class E implements  D{
 	}
 
 	private static class C extends A {

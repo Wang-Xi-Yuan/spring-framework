@@ -55,6 +55,8 @@ import org.springframework.web.util.WebUtils;
  * query parameters (assuming they've not been used as URI template variables),
  * but this behavior can be changed by overriding the
  * {@link #isEligibleProperty(String, Object)} method.
+ * 默认情况下所有原始模型属性(或其集合)都公开为HTTP查询参数(假设它们没有被用作URI模板变量),但是这个行为可以通过
+ * 覆盖isEligibleProperty方法进行改变
  *
  * <p>A URL for this view is supposed to be an HTTP redirect URL, i.e.
  * suitable for HttpServletResponse's {@code sendRedirect} method, which
@@ -68,7 +70,7 @@ import org.springframework.web.util.WebUtils;
  * Since most web applications will never know or care what their context path
  * actually is, they are much better off setting this flag to true, and submitting
  * paths which are to be considered relative to the web application root.
- *
+ * contextRelative这个属性，默认为false,当为false,使用路径“/”就相当于web server root
  * <p><b>NOTE when using this redirect view in a Portlet environment:</b> Make sure
  * that your controller respects the Portlet {@code sendRedirect} constraints.
  *
@@ -186,6 +188,7 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 
 	/**
 	 * Set whether to stay compatible with HTTP 1.0 clients.
+	 * 设置是否与HTTP 1.0客户端保持兼容。
 	 * <p>In the default implementation, this will enforce HTTP status code 302
 	 * in any case, i.e. delegate to {@code HttpServletResponse.sendRedirect}.
 	 * Turning this off will send HTTP status code 303, which is the correct
@@ -249,6 +252,7 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 
 	/**
 	 * Whether to propagate the query params of the current URL.
+	 * 是否传播当前URL的查询参数。
 	 * @since 4.1
 	 */
 	public boolean isPropagateQueryProperties() {
@@ -303,8 +307,9 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-
+		// 获取请求url
 		String targetUrl = createTargetUrl(model, request);
+		// 看容器中有没有配置RequestDataValueProcessor,有就将url交由它处理
 		targetUrl = updateTargetUrl(targetUrl, model, request, response);
 
 		// Save flash attributes
@@ -318,6 +323,9 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 	 * Create the target URL by checking if the redirect string is a URI template first,
 	 * expanding it with the given model, and then optionally appending simple type model
 	 * attributes as query String parameters.
+	 *
+	 * 首先通过检查重定向字符串是否是URI模板来创建目标URL，用给定的模型展开它，然后可选地附加简单类型模型
+	 * 属性作为查询字符串参数。
 	 */
 	protected final String createTargetUrl(Map<String, Object> model, HttpServletRequest request)
 			throws UnsupportedEncodingException {
@@ -326,13 +334,14 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 		StringBuilder targetUrl = new StringBuilder();
 		String url = getUrl();
 		Assert.state(url != null, "'url' not set");
-
+		// url以“/”打头并且contextRelative为true,虽然contextRelative默认为false,但是
+		// UrlBasedViewResolver中构建RedirectView时默认设置为true的
 		if (this.contextRelative && getUrl().startsWith("/")) {
-			// Do not apply context path to relative URLs.
+			// Do not apply context path to relative URLs.将上下文路径应用到url上
 			targetUrl.append(getContextPath(request));
 		}
 		targetUrl.append(getUrl());
-
+		// 编码
 		String enc = this.encodingScheme;
 		if (enc == null) {
 			enc = request.getCharacterEncoding();
@@ -340,15 +349,21 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 		if (enc == null) {
 			enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
 		}
-
+		// 是否将重定向URL视为URI模板。expandUriTemplateVariables默认为true
 		if (this.expandUriTemplateVariables && StringUtils.hasText(targetUrl)) {
 			Map<String, String> variables = getCurrentRequestUriVariables(request);
+			// 替换Uri模板变量
 			targetUrl = replaceUriTemplateVariables(targetUrl.toString(), model, variables, enc);
 		}
+		// 是否传播当前URL的查询参数。默认为false
 		if (isPropagateQueryProperties()) {
+			// 将当前请求的查询字符串追加到目标重定向URL。
 			appendCurrentQueryParams(targetUrl, request);
 		}
+		// 是否暴露Model属性，默认为true
 		if (this.exposeModelAttributes) {
+			// 将模型属性字符串化、url编码和格式化为查询属性添加到url中
+			// url有关#的作用请参考这篇博客http://blog.sina.com.cn/s/blog_6d3a29310100w67y.html
 			appendQueryProperties(targetUrl, model, enc);
 		}
 
@@ -434,6 +449,7 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 	/**
 	 * Append query properties to the redirect URL.
 	 * Stringifies, URL-encodes and formats model attributes as query properties.
+	 * 将模型属性字符串化、url编码和格式化为查询属性
 	 * @param targetUrl the StringBuilder to append the properties to
 	 * @param model a Map that contains model attributes
 	 * @param encodingScheme the encoding scheme to use
@@ -626,8 +642,7 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 				// Send status code 302 by default.
 				response.sendRedirect(encodedURL);
 			}
-		}
-		else {
+		}else {
 			HttpStatus statusCode = getHttp11StatusCode(request, response, targetUrl);
 			response.setStatus(statusCode.value());
 			response.setHeader("Location", encodedURL);

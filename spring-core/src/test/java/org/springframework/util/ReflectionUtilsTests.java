@@ -42,6 +42,7 @@ class ReflectionUtilsTests {
 
 	@Test
 	void findField() {
+		// 反射查找类属性
 		Field field = ReflectionUtils.findField(TestObjectSubclassWithPublicField.class, "publicField", String.class);
 		assertThat(field).isNotNull();
 		assertThat(field.getName()).isEqualTo("publicField");
@@ -63,6 +64,7 @@ class ReflectionUtilsTests {
 
 	@Test
 	void setField() {
+		// 反射获取父类属性并设置
 		TestObjectSubclassWithNewField testBean = new TestObjectSubclassWithNewField();
 		Field field = ReflectionUtils.findField(TestObjectSubclassWithNewField.class, "name", String.class);
 
@@ -78,6 +80,7 @@ class ReflectionUtilsTests {
 
 	@Test
 	void invokeMethod() throws Exception {
+		// 反射调用方法
 		String rob = "Rob Harrop";
 
 		TestObject bean = new TestObject();
@@ -96,6 +99,7 @@ class ReflectionUtilsTests {
 
 	@Test
 	void declaresException() throws Exception {
+		// 方法上如果抛出异常了，通过反射可以判断是什么异常，只要是抛出异常的子类都会返回true
 		Method remoteExMethod = A.class.getDeclaredMethod("foo", Integer.class);
 		assertThat(ReflectionUtils.declaresException(remoteExMethod, RemoteException.class)).isTrue();
 		assertThat(ReflectionUtils.declaresException(remoteExMethod, ConnectException.class)).isTrue();
@@ -113,6 +117,7 @@ class ReflectionUtilsTests {
 	void copySrcToDestinationOfIncorrectClass() {
 		TestObject src = new TestObject();
 		String dest = new String();
+		// 浅复制
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				ReflectionUtils.shallowCopyFieldState(src, dest));
 	}
@@ -175,17 +180,20 @@ class ReflectionUtilsTests {
 	private void testValidCopy(TestObject src, TestObject dest) {
 		src.setName("freddie");
 		src.setAge(15);
-		src.setSpouse(new TestObject());
+		TestObject testObject = new TestObject ();
+		testObject.setAge (16);
+		src.setSpouse(testObject);
 		assertThat(src.getAge() == dest.getAge()).isFalse();
 
 		ReflectionUtils.shallowCopyFieldState(src, dest);
 		assertThat(dest.getAge()).isEqualTo(src.getAge());
-		assertThat(dest.getSpouse()).isEqualTo(src.getSpouse());
+		assertThat(dest.getSpouse().getAge ()).isEqualTo(src.getSpouse().getAge ());
 	}
 
 	@Test
 	void doWithProtectedMethods() {
 		ListSavingMethodCallback mc = new ListSavingMethodCallback();
+		// 查找对象的protected方法并收集起来
 		ReflectionUtils.doWithMethods(TestObject.class, mc, new ReflectionUtils.MethodFilter() {
 			@Override
 			public boolean matches(Method m) {
@@ -204,6 +212,7 @@ class ReflectionUtilsTests {
 		ListSavingMethodCallback mc = new ListSavingMethodCallback();
 		ReflectionUtils.doWithMethods(TestObjectSubclass.class, mc);
 		int absquatulateCount = 0;
+		// absquatulate方法被重载了，会在父子类中发现两次
 		for (String name : mc.getMethodNames()) {
 			if (name.equals("absquatulate")) {
 				++absquatulateCount;
@@ -253,6 +262,7 @@ class ReflectionUtilsTests {
 			public void m1$1() {
 			}
 		}
+		// CGLIB代理类重命名的方式为CGLIB$方法名$xxx
 		assertThat(ReflectionUtils.isCglibRenamedMethod(C.class.getMethod("CGLIB$m1$123"))).isTrue();
 		assertThat(ReflectionUtils.isCglibRenamedMethod(C.class.getMethod("CGLIB$m1$0"))).isTrue();
 		assertThat(ReflectionUtils.isCglibRenamedMethod(C.class.getMethod("CGLIB$$0"))).isFalse();
@@ -272,6 +282,7 @@ class ReflectionUtilsTests {
 			}
 		}
 		int toStringMethodCount = 0;
+		// 万物皆继承于Object
 		for (Method method : ReflectionUtils.getAllDeclaredMethods(Foo.class)) {
 			if (method.getName().equals("toString")) {
 				toStringMethodCount++;
@@ -289,6 +300,7 @@ class ReflectionUtilsTests {
 			}
 		}
 		int toStringMethodCount = 0;
+		// 获取所有不重名的方法
 		for (Method method : ReflectionUtils.getUniqueDeclaredMethods(Foo.class)) {
 			if (method.getName().equals("toString")) {
 				toStringMethodCount++;
@@ -327,7 +339,7 @@ class ReflectionUtilsTests {
 	void getDeclaredMethodsReturnsCopy() {
 		Method[] m1 = ReflectionUtils.getDeclaredMethods(A.class);
 		Method[] m2 = ReflectionUtils.getDeclaredMethods(A.class);
-		assertThat(m1). isNotSameAs(m2);
+		assertThat(m1).isNotSameAs(m2);
 	}
 
 	private static class ListSavingMethodCallback implements ReflectionUtils.MethodCallback {

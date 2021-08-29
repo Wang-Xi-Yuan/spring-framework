@@ -90,6 +90,7 @@ public class OrderComparator implements Comparator<Object> {
 
 	/**
 	 * Determine the order value for the given object.
+	 * 确定给定对象的顺序值。
 	 * <p>The default implementation checks against the given {@link OrderSourceProvider}
 	 * using {@link #findOrder} and falls back to a regular {@link #getOrder(Object)} call.
 	 * @param obj the object to check
@@ -107,8 +108,7 @@ public class OrderComparator implements Comparator<Object> {
 							break;
 						}
 					}
-				}
-				else {
+				}else {
 					order = findOrder(orderSource);
 				}
 			}
@@ -164,8 +164,8 @@ public class OrderComparator implements Comparator<Object> {
 
 	/**
 	 * Sort the given List with a default OrderComparator.
-	 * <p>Optimized to skip sorting for lists with size 0 or 1,
-	 * in order to avoid unnecessary array extraction.
+	 * <p>Optimized to skip sorting for lists with size 0 or 1,in order to avoid unnecessary array extraction.
+	 * 优化为跳过大小为0或1的列表排序，以避免不必要的数组提取。
 	 * @param list the List to sort
 	 * @see java.util.List#sort(java.util.Comparator)
 	 */

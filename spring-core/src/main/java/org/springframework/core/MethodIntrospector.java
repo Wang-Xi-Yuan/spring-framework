@@ -29,11 +29,11 @@ import org.springframework.util.ReflectionUtils;
 
 /**
  * Defines the algorithm for searching for metadata-associated methods exhaustively
- * including interfaces and parent classes while also dealing with parameterized methods
- * as well as common scenarios encountered with interface and class-based proxies.
+ * including interfaces and parent classes while also dealing with parameterized methods as well as common scenarios encountered with interface and class-based proxies.
+ * 定义用于彻底搜索元数据相关方法的算法包括接口和父类，同时也处理参数化方法，以及常见的使用接口和基于类代理的场景
  *
  * <p>Typically, but not necessarily, used for finding annotated handler methods.
- *
+ *  通常(但不一定)用于查找带注解的处理程序方法。
  * @author Juergen Hoeller
  * @author Rossen Stoyanchev
  * @since 4.2.3
@@ -46,8 +46,10 @@ public final class MethodIntrospector {
 
 	/**
 	 * Select methods on the given target type based on the lookup of associated metadata.
+	 * 基于关联元数据的查找，选择给定目标类型上的方法。
 	 * <p>Callers define methods of interest through the {@link MetadataLookup} parameter,
 	 * allowing to collect the associated metadata into the result map.
+	 * 调用者通过MetadataLookup参数定义感兴趣的方法，允许将关联的元数据收集到结果映射中。
 	 * @param targetType the target type to search methods on
 	 * @param metadataLookup a {@link MetadataLookup} callback to inspect methods of interest,
 	 * returning non-null metadata to be associated with a given method if there is a match,
@@ -61,6 +63,7 @@ public final class MethodIntrospector {
 		Class<?> specificHandlerType = null;
 
 		if (!Proxy.isProxyClass(targetType)) {
+			// targetType只要不是CGLIB代理类，就返回自己，否则返回原始类
 			specificHandlerType = ClassUtils.getUserClass(targetType);
 			handlerTypes.add(specificHandlerType);
 		}
@@ -70,14 +73,19 @@ public final class MethodIntrospector {
 			final Class<?> targetClass = (specificHandlerType != null ? specificHandlerType : currentHandlerType);
 
 			ReflectionUtils.doWithMethods(currentHandlerType, method -> {
+				// 获取最明确的目标方法
 				Method specificMethod = ClassUtils.getMostSpecificMethod(method, targetClass);
+				// 用于查找目标方法上的元数据信息
 				T result = metadataLookup.inspect(specificMethod);
 				if (result != null) {
+					// 关于桥接方法大家可以去看这篇博客 https://blog.csdn.net/mhmyqn/article/details/47342577
 					Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
 					if (bridgedMethod == specificMethod || metadataLookup.inspect(bridgedMethod) == null) {
+						// 这里将收集到的方法以及对应的元数据信息 加入缓存中
 						methodMap.put(specificMethod, result);
 					}
 				}
+				// 最后一个参数是方法过滤器，这里是要求非桥接方法才去调用方法回调函数
 			}, ReflectionUtils.USER_DECLARED_METHODS);
 		}
 
@@ -86,6 +94,7 @@ public final class MethodIntrospector {
 
 	/**
 	 * Select methods on the given target type based on a filter.
+	 * 基于筛选器选择给定目标类型上的方法。
 	 * <p>Callers define methods of interest through the {@code MethodFilter} parameter.
 	 * @param targetType the target type to search methods on
 	 * @param methodFilter a {@code MethodFilter} to help
@@ -120,15 +129,13 @@ public final class MethodIntrospector {
 			for (Class<?> ifc : targetType.getInterfaces()) {
 				try {
 					return ifc.getMethod(methodName, parameterTypes);
-				}
-				catch (NoSuchMethodException ex) {
+				}catch (NoSuchMethodException ex) {
 					// Alright, not on this interface then...
 				}
 			}
-			// A final desperate attempt on the proxy class itself...
+			// A final desperate attempt on the proxy class itself...对代理类本身的最后一次绝望尝试……
 			return targetType.getMethod(methodName, parameterTypes);
-		}
-		catch (NoSuchMethodException ex) {
+		}catch (NoSuchMethodException ex) {
 			throw new IllegalStateException(String.format(
 					"Need to invoke method '%s' declared on target class '%s', " +
 					"but not found in any interface(s) of the exposed proxy type. " +
@@ -141,6 +148,7 @@ public final class MethodIntrospector {
 
 	/**
 	 * A callback interface for metadata lookup on a given method.
+	 * 用于在给定方法上查找元数据的回调接口。
 	 * @param <T> the type of metadata returned
 	 */
 	@FunctionalInterface
@@ -148,6 +156,7 @@ public final class MethodIntrospector {
 
 		/**
 		 * Perform a lookup on the given method and return associated metadata, if any.
+		 * 对给定的方法执行查找并返回相关的元数据(如果有的话)。
 		 * @param method the method to inspect
 		 * @return non-null metadata to be associated with a method if there is a match,
 		 * or {@code null} for no match

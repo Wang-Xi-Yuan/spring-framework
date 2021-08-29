@@ -79,8 +79,7 @@ public class HandlerExecutionChain {
 			HandlerExecutionChain originalChain = (HandlerExecutionChain) handler;
 			this.handler = originalChain.getHandler();
 			this.interceptorList.addAll(originalChain.interceptorList);
-		}
-		else {
+		}else {
 			this.handler = handler;
 		}
 		this.interceptorList.addAll(interceptorList);

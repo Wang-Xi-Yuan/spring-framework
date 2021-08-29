@@ -69,8 +69,8 @@ public class ExceptionHandlerMethodResolver {
 
 
 	/**
-	 * Extract exception mappings from the {@code @ExceptionHandler} annotation first,
-	 * and then as a fallback from the method signature itself.
+	 * Extract exception mappings from the {@code @ExceptionHandler} annotation first,and then as a fallback from the method signature itself.
+	 * 首先从{@code @ExceptionHandler}注释提取异常映射，然后作为方法签名本身的回退。
 	 */
 	@SuppressWarnings("unchecked")
 	private List<Class<? extends Throwable>> detectExceptionMappings(Method method) {

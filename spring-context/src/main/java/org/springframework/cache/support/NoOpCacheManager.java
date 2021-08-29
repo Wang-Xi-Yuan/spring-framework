@@ -28,9 +28,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.lang.Nullable;
 
 /**
- * A basic, no operation {@link CacheManager} implementation suitable
- * for disabling caching, typically used for backing cache declarations
- * without an actual backing store.
+ * A basic, no operation {@link CacheManager} implementation suitable for disabling caching, typically used for backing cache declarations without an actual backing store.
+ *一个基本的，无操作的{@link CacheManager}实现，适合禁用缓存，通常用于在没有实际备份存储的情况下备份缓存声明。
  *
  * <p>Will simply accept any items into the cache not actually storing them.
  *

@@ -40,7 +40,7 @@ import org.springframework.util.Assert;
  * process standard JSR-107 cache annotations.
  *
  * <p>The {@link JCacheOperationSource} is used for determining caching operations
- *
+ * JCacheOperationSource用来确定缓存操作
  * <p>A cache aspect is serializable if its {@code JCacheOperationSource} is serializable.
  *
  * @author Stephane Nicoll

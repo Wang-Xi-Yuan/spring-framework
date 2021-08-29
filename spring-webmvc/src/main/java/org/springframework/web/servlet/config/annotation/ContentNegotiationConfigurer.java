@@ -36,11 +36,12 @@ import org.springframework.web.accept.ParameterContentNegotiationStrategy;
 /**
  * Creates a {@code ContentNegotiationManager} and configures it with
  * one or more {@link ContentNegotiationStrategy} instances.
+ * 创建一个ContentNegotiationManager并配置一个或多个ContentNegotiationStrategy实例
  *
  * <p>This factory offers properties that in turn result in configuring the
  * underlying strategies. The table below shows the property names, their
  * default settings, as well as the strategies that they help to configure:
- *
+ * 此工厂提供属性，这些属性反过来导致配置基本策略。下表显示了属性名默认设置，以及它们帮助配置的策略:
  * <table>
  * <tr>
  * <th>Property Setter</th>
@@ -149,6 +150,7 @@ public class ContentNegotiationConfigurer {
 	 * the requested media type.
 	 * <p>By default this is set to {@code false} in which case path extensions
 	 * have no impact on content negotiation.
+	 * 默认情况下，它被设置为{@code false}，在这种情况下，路径扩展对内容谈判没有影响。
 	 * @deprecated as of 5.2.4. See deprecation note on
 	 * {@link ContentNegotiationManagerFactoryBean#setFavorPathExtension(boolean)}.
 	 */

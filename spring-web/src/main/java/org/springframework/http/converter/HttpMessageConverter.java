@@ -26,7 +26,7 @@ import org.springframework.lang.Nullable;
 
 /**
  * Strategy interface for converting from and to HTTP requests and responses.
- *
+ * 用于从HTTP请求和响应转换到HTTP请求和响应的策略接口。
  * @author Arjen Poutsma
  * @author Juergen Hoeller
  * @since 3.0
@@ -36,6 +36,7 @@ public interface HttpMessageConverter<T> {
 
 	/**
 	 * Indicates whether the given class can be read by this converter.
+	 * 指示此转换器是否可以读取给定的类。
 	 * @param clazz the class to test for readability
 	 * @param mediaType the media type to read (can be {@code null} if not specified);
 	 * typically the value of a {@code Content-Type} header.
@@ -62,6 +63,7 @@ public interface HttpMessageConverter<T> {
 	 * Read an object of the given type from the given input message, and returns it.
 	 * @param clazz the type of object to return. This type must have previously been passed to the
 	 * {@link #canRead canRead} method of this interface, which must have returned {@code true}.
+	 *            这个class必须已经通过canRead方法返回true
 	 * @param inputMessage the HTTP input message to read from
 	 * @return the converted object
 	 * @throws IOException in case of I/O errors

@@ -135,9 +135,11 @@ public abstract class AbstractHandlerExceptionResolver implements HandlerExcepti
 	@Nullable
 	public ModelAndView resolveException(
 			HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex) {
-
+		// 检查这个解析器是否适用于这个处理器
 		if (shouldApplyTo(request, handler)) {
+			// 添加响应头，阻止响应缓存
 			prepareResponse(ex, response);
+			// 解析异常
 			ModelAndView result = doResolveException(request, response, handler, ex);
 			if (result != null) {
 				// Print debug message when warn logger is not enabled.
@@ -219,7 +221,7 @@ public abstract class AbstractHandlerExceptionResolver implements HandlerExcepti
 	}
 
 	/**
-	 * Prepare the response for the exceptional case.
+	 * Prepare the response for the exceptional case. 为异常情况准备响应
 	 * <p>The default implementation prevents the response from being cached,
 	 * if the {@link #setPreventResponseCaching "preventResponseCaching"} property
 	 * has been set to "true".

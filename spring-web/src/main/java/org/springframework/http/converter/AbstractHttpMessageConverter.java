@@ -41,7 +41,7 @@ import org.springframework.util.Assert;
  * <p>This base class adds support for setting supported {@code MediaTypes}, through the
  * {@link #setSupportedMediaTypes(List) supportedMediaTypes} bean property. It also adds
  * support for {@code Content-Type} and {@code Content-Length} when writing to output messages.
- *
+ * 这个抽象类支持设置媒体类型通过setSupportedMediaTypes方法，当写消息时也支持设置Content-Type以及Content-Length
  * @author Arjen Poutsma
  * @author Juergen Hoeller
  * @author Sebastien Deleuze
@@ -96,6 +96,7 @@ public abstract class AbstractHttpMessageConverter<T> implements HttpMessageConv
 
 
 	/**
+	 * 设置支持的媒体类型
 	 * Set the list of {@link MediaType} objects supported by this converter.
 	 */
 	public void setSupportedMediaTypes(List<MediaType> supportedMediaTypes) {
@@ -222,15 +223,14 @@ public abstract class AbstractHttpMessageConverter<T> implements HttpMessageConv
 					return headers;
 				}
 			}));
-		}
-		else {
+		}else {
 			writeInternal(t, outputMessage);
 			outputMessage.getBody().flush();
 		}
 	}
 
 	/**
-	 * Add default headers to the output message.
+	 * Add default headers to the output message.向输出消息添加默认头
 	 * <p>This implementation delegates to {@link #getDefaultContentType(Object)} if a
 	 * content type was not provided, set if necessary the default character set, calls
 	 * {@link #getContentLength}, and sets the corresponding headers.
@@ -241,8 +241,7 @@ public abstract class AbstractHttpMessageConverter<T> implements HttpMessageConv
 			MediaType contentTypeToUse = contentType;
 			if (contentType == null || !contentType.isConcrete()) {
 				contentTypeToUse = getDefaultContentType(t);
-			}
-			else if (MediaType.APPLICATION_OCTET_STREAM.equals(contentType)) {
+			}else if (MediaType.APPLICATION_OCTET_STREAM.equals(contentType)) {
 				MediaType mediaType = getDefaultContentType(t);
 				contentTypeToUse = (mediaType != null ? mediaType : contentTypeToUse);
 			}

@@ -179,6 +179,12 @@ class ClassUtilsTests {
 	}
 
 	@Test
+	void getPrimitiveClassName() {
+		System.out.println (ClassUtils.resolvePrimitiveClassName("[J"));
+		System.out.println (long[].class);
+	}
+
+	@Test
 	void getShortName() {
 		String className = ClassUtils.getShortName(getClass());
 		assertThat(className).as("Class name did not match").isEqualTo("ClassUtilsTests");
@@ -210,6 +216,7 @@ class ClassUtilsTests {
 
 	@Test
 	void getShortNameForInnerClass() {
+		// 内部类有点不一样
 		String className = ClassUtils.getShortName(InnerClass.class);
 		assertThat(className).as("Class name did not match").isEqualTo("ClassUtilsTests.InnerClass");
 	}
@@ -217,6 +224,7 @@ class ClassUtilsTests {
 	@Test
 	void getShortNameAsProperty() {
 		String shortName = ClassUtils.getShortNameAsProperty(this.getClass());
+		System.out.println (ClassUtils.getShortNameAsProperty(InnerClass.class));
 		assertThat(shortName).as("Class name did not match").isEqualTo("classUtilsTests");
 	}
 
@@ -302,7 +310,9 @@ class ClassUtilsTests {
 	@Test
 	void noArgsStaticMethod() throws IllegalAccessException, InvocationTargetException {
 		Method method = ClassUtils.getStaticMethod(InnerClass.class, "staticMethod");
+		//如果底层方法是静态的，则指定的obj参数被忽略。它可能是null。
 		method.invoke(null, (Object[]) null);
+		System.out.println (InnerClass.noArgCalled);
 		assertThat(InnerClass.noArgCalled).as("no argument method was not invoked.").isTrue();
 	}
 
@@ -310,6 +320,7 @@ class ClassUtilsTests {
 	void argsStaticMethod() throws IllegalAccessException, InvocationTargetException {
 		Method method = ClassUtils.getStaticMethod(InnerClass.class, "argStaticMethod", String.class);
 		method.invoke(null, "test");
+
 		assertThat(InnerClass.argCalled).as("argument method was not invoked.").isTrue();
 	}
 
@@ -317,6 +328,7 @@ class ClassUtilsTests {
 	void overloadedStaticMethod() throws IllegalAccessException, InvocationTargetException {
 		Method method = ClassUtils.getStaticMethod(InnerClass.class, "staticMethod", String.class);
 		method.invoke(null, "test");
+		System.out.println (InnerClass.test);
 		assertThat(InnerClass.overloadedCalled).as("argument method was not invoked.").isTrue();
 	}
 
@@ -367,12 +379,14 @@ class ClassUtilsTests {
 		ifcs.add(Serializable.class);
 		ifcs.add(Runnable.class);
 		assertThat(ifcs.toString()).isEqualTo("[interface java.io.Serializable, interface java.lang.Runnable]");
+		// 这里就是把interface关键字去掉了
 		assertThat(ClassUtils.classNamesToString(ifcs)).isEqualTo("[java.io.Serializable, java.lang.Runnable]");
 
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(ArrayList.class);
 		classes.add(Integer.class);
 		assertThat(classes.toString()).isEqualTo("[class java.util.ArrayList, class java.lang.Integer]");
+		// 这里就是把class关键字去掉了
 		assertThat(ClassUtils.classNamesToString(classes)).isEqualTo("[java.util.ArrayList, java.lang.Integer]");
 
 		assertThat(Collections.singletonList(List.class).toString()).isEqualTo("[interface java.util.List]");
@@ -415,6 +429,7 @@ class ClassUtilsTests {
 	@ParameterizedTest
 	@WrapperTypes
 	void isPrimitiveWrapper(Class<?> type) {
+		// 确定给定类型是否是包装类
 		assertThat(ClassUtils.isPrimitiveWrapper(type)).isTrue();
 	}
 
@@ -427,6 +442,7 @@ class ClassUtilsTests {
 	@ParameterizedTest
 	@WrapperTypes
 	void isPrimitiveOrWrapperWithWrapper(Class<?> type) {
+		// 确定是否是基本类型或基本类型包装类
 		assertThat(ClassUtils.isPrimitiveOrWrapper(type)).isTrue();
 	}
 
@@ -450,6 +466,7 @@ class ClassUtilsTests {
 		static boolean noArgCalled;
 		static boolean argCalled;
 		static boolean overloadedCalled;
+		static String  test;
 
 		public static void staticMethod() {
 			noArgCalled = true;
@@ -457,6 +474,7 @@ class ClassUtilsTests {
 
 		public static void staticMethod(String anArg) {
 			overloadedCalled = true;
+			test = anArg;
 		}
 
 		public static void argStaticMethod(String anArg) {

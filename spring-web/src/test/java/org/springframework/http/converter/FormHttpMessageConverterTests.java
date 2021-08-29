@@ -81,12 +81,12 @@ public class FormHttpMessageConverterTests {
 
 	@Test
 	public void cannotReadMultipart() {
-		// Without custom multipart types supported
+		// Without custom multipart types supported 不支持自定义多部件类型
 		asssertCannotReadMultipart();
 
 		this.converter.addSupportedMediaTypes(MULTIPART_RELATED);
 
-		// Should still be the case with custom multipart types supported
+		// Should still be the case with custom multipart types supported 是否仍然支持自定义多部件类型
 		asssertCannotReadMultipart();
 	}
 
@@ -122,6 +122,7 @@ public class FormHttpMessageConverterTests {
 
 	@Test
 	public void readForm() throws Exception {
+		// 空格 URL中的空格可以用+号或者编码%20;URL 中+号表示空格%2B
 		String body = "name+1=value+1&name+2=value+2%2B1&name+2=value+2%2B2&name+3";
 		MockHttpInputMessage inputMessage = new MockHttpInputMessage(body.getBytes(StandardCharsets.ISO_8859_1));
 		inputMessage.getHeaders().setContentType(

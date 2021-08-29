@@ -339,6 +339,7 @@ public abstract class ClassUtils {
 	 * Determine whether the {@link Class} identified by the supplied name is present
 	 * and can be loaded. Will return {@code false} if either the class or
 	 * one of its dependencies is not present or cannot be loaded.
+	 * 由名称提供表示的类 能否被类加载器加载
 	 * @param className the name of the class to check
 	 * @param classLoader the class loader to use
 	 * (may be {@code null} which indicates the default class loader)
@@ -390,6 +391,7 @@ public abstract class ClassUtils {
 	/**
 	 * Check whether the given class is cache-safe in the given context,
 	 * i.e. whether it is loaded by the given ClassLoader or a parent of it.
+	 * 检查给定的类在给定的上下文中是否缓存安全，是否它是由给定的类加载器加载或是它的父类加载器加载。
 	 * @param clazz the class to analyze
 	 * @param classLoader the ClassLoader to potentially cache metadata in
 	 * (may be {@code null} which indicates the system class loader)
@@ -450,6 +452,7 @@ public abstract class ClassUtils {
 	/**
 	 * Resolve the given class name as primitive class, if appropriate,
 	 * according to the JVM's naming rules for primitive classes.
+	 * 如果合适，将给定的类名解析为基元类，根据JVM对原始类的命名规则。
 	 * <p>Also supports the JVM's internal class names for primitive arrays.
 	 * Does <i>not</i> support the "[]" suffix notation for primitive arrays;
 	 * this is only supported by {@link #forName(String, ClassLoader)}.
@@ -532,6 +535,9 @@ public abstract class ClassUtils {
 	 * Check if the right-hand side type may be assigned to the left-hand side
 	 * type, assuming setting by reflection. Considers primitive wrapper
 	 * classes as assignable to the corresponding primitive types.
+	 *
+	 * 检查右边的类型是否可以分配给左边类型，假设通过反射进行设置。认为原始包装
+	 * 类可以赋值给相应的基元类型。
 	 * @param lhsType the target type
 	 * @param rhsType the value type that should be assigned to the target type
 	 * @return if the target type is assignable from the value type
@@ -786,6 +792,7 @@ public abstract class ClassUtils {
 
 	/**
 	 * Determine the common ancestor of the given classes, if any.
+	 * 确定给定类的公共祖先(如果有的话)。
 	 * @param clazz1 the class to introspect
 	 * @param clazz2 the other class to introspect
 	 * @return the common ancestor (i.e. common superclass, one interface
@@ -890,10 +897,13 @@ public abstract class ClassUtils {
 	/**
 	 * Return the user-defined class for the given class: usually simply the given
 	 * class, but the original class in case of a CGLIB-generated subclass.
+	 *
+	 * 为给定的类返回用户定义的类:通常是给定的类，除了在cglib生成的情况下需要返回原始类。
 	 * @param clazz the class to check
 	 * @return the user-defined class
 	 */
 	public static Class<?> getUserClass(Class<?> clazz) {
+		// 如果是CGLIB代理，返回原始类
 		if (clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
 			Class<?> superclass = clazz.getSuperclass();
 			if (superclass != null && superclass != Object.class) {
@@ -959,6 +969,7 @@ public abstract class ClassUtils {
 
 	/**
 	 * Get the class name without the qualified package name.
+	 * 获取没有限定包名的类名。
 	 * @param clazz the class to get the short name for
 	 * @return the class name of the class without the package name
 	 */
@@ -969,6 +980,7 @@ public abstract class ClassUtils {
 	/**
 	 * Return the short string name of a Java class in uncapitalized JavaBeans
 	 * property format. Strips the outer class name in case of an inner class.
+	 * 用不大写的javabean返回Java类的短字符串名称 属性格式。如果是内部类，则去掉外部类名。
 	 * @param clazz the class
 	 * @return the short name rendered in a standard JavaBeans property format
 	 * @see java.beans.Introspector#decapitalize(String)
@@ -1007,6 +1019,7 @@ public abstract class ClassUtils {
 
 	/**
 	 * Determine the name of the package of the given fully-qualified class name,
+	 * 确定给定的完全限定类名的包的名称，
 	 * e.g. "java.lang" for the {@code java.lang.String} class name.
 	 * @param fqClassName the fully-qualified class name
 	 * @return the package name, or the empty String if the class
@@ -1021,6 +1034,8 @@ public abstract class ClassUtils {
 	/**
 	 * Return the qualified name of the given class: usually simply
 	 * the class name, but component type class name + "[]" for arrays.
+	 *
+	 * 返回给定类的限定名:通常很简单类名，但组件类型类名+ "[]"用于数组。
 	 * @param clazz the class
 	 * @return the qualified name of the class
 	 */
@@ -1238,11 +1253,12 @@ public abstract class ClassUtils {
 	}
 
 	/**
-	 * Given a method, which may come from an interface, and a target class used
-	 * in the current reflective invocation, find the corresponding target method
-	 * if there is one. E.g. the method may be {@code IFoo.bar()} and the
+	 * Given a method, which may come from an interface, and a target class used in the current reflective invocation，
+	 * find the corresponding target method if there is one.
+	 * 给定一个方法(可能来自接口)和当前反射调用中使用的目标类，如果有相应的目标方法，请找到它。
+	 * E.g. the method may be {@code IFoo.bar()} and the
 	 * target class may be {@code DefaultFoo}. In this case, the method may be
-	 * {@code DefaultFoo.bar()}. This enables attributes on that method to be found.
+	 * {@code DefaultFoo.bar()}. This enables attributes on that method to be found. 这样就可以找到该方法上的属性。
 	 * <p><b>NOTE:</b> In contrast to {@link org.springframework.aop.support.AopUtils#getMostSpecificMethod},
 	 * this method does <i>not</i> resolve Java 5 bridge methods automatically.
 	 * Call {@link org.springframework.core.BridgeMethodResolver#findBridgedMethod}
@@ -1335,6 +1351,7 @@ public abstract class ClassUtils {
 
 	/**
 	 * Determine whether the given method is overridable in the given target class.
+	 * 确定给定的方法在给定的目标类中是否可重写
 	 * @param method the method to check
 	 * @param targetClass the target class to check against
 	 */

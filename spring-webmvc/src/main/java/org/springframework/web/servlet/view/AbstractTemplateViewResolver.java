@@ -94,7 +94,11 @@ public abstract class AbstractTemplateViewResolver extends UrlBasedViewResolver 
 		this.exposeSpringMacroHelpers = exposeSpringMacroHelpers;
 	}
 
-
+	/**
+	* @author
+	* @Description: 提供了一种方便的方法来指定AbstractTemplateView的暴露请求属性、会话属性和Spring的宏助手的标志。
+	* @Date 2020/12/8 11:03
+	*/
 	@Override
 	protected AbstractUrlBasedView buildView(String viewName) throws Exception {
 		AbstractTemplateView view = (AbstractTemplateView) super.buildView(viewName);

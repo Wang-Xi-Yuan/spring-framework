@@ -65,7 +65,7 @@ public class EhCacheCacheManager extends AbstractTransactionSupportingCacheManag
 		this.cacheManager = cacheManager;
 	}
 
-	/**
+	 /**
 	 * Return the backing EhCache {@link net.sf.ehcache.CacheManager}.
 	 */
 	@Nullable

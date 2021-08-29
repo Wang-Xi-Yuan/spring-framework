@@ -163,8 +163,7 @@ public abstract class AbstractJackson2View extends AbstractView {
 		if (this.updateContentLength) {
 			temporaryStream = createTemporaryOutputStream();
 			stream = temporaryStream;
-		}
-		else {
+		}else {
 			stream = response.getOutputStream();
 		}
 

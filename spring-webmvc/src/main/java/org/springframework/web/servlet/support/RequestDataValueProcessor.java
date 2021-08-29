@@ -26,12 +26,12 @@ import org.springframework.lang.Nullable;
  * A contract for inspecting and potentially modifying request data values such
  * as URL query parameters or form field values before they are rendered by a
  * view or before a redirect.
- *
+ * 修改url值在view或重定向前
  * <p>Implementations may use this contract for example as part of a solution
  * to provide data integrity, confidentiality, protection against cross-site
  * request forgery (CSRF), and others or for other tasks such as automatically
  * adding a hidden field to all forms and URLs.
- *
+ * 如自动为所有表单和url添加隐藏字段。
  * <p>View technologies that support this contract can obtain an instance to
  * delegate to via {@link RequestContext#getRequestDataValueProcessor()}.
  *

@@ -68,7 +68,7 @@ import org.springframework.web.util.UriTemplateHandler;
  * Synchronous client to perform HTTP requests, exposing a simple, template
  * method API over underlying HTTP client libraries such as the JDK
  * {@code HttpURLConnection}, Apache HttpComponents, and others.
- *
+ * 同步客户端来执行HTTP请求，公开一个简单的模板基于HTTP客户端库的方法API
  * <p>The RestTemplate offers templates for common scenarios by HTTP method, in
  * addition to the generalized {@code exchange} and {@code execute} methods that
  * support of less frequent cases.
@@ -77,6 +77,9 @@ import org.springframework.web.util.UriTemplateHandler;
  * only minor requests for changes and bugs to be accepted going forward. Please,
  * consider using the {@code org.springframework.web.reactive.client.WebClient}
  * which has a more modern API and supports sync, async, and streaming scenarios.
+ * 在5.0时，这个类处于维护模式,在将来只接受有关更改和错误的较小请求。
+ * 请考虑使用WebClient它有一个更现代的API，支持同步、异步和流场景。
+ *
  *
  * @author Arjen Poutsma
  * @author Brian Clozel
@@ -327,6 +330,7 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 	@Override
 	@Nullable
 	public <T> T getForObject(String url, Class<T> responseType, Object... uriVariables) throws RestClientException {
+		// AcceptHeaderRequestCallback
 		RequestCallback requestCallback = acceptHeaderRequestCallback(responseType);
 		HttpMessageConverterExtractor<T> responseExtractor =
 				new HttpMessageConverterExtractor<>(responseType, getMessageConverters(), logger);
@@ -885,6 +889,7 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 			if (this.responseType != null) {
 				List<MediaType> allSupportedMediaTypes = getMessageConverters().stream()
 						.filter(converter -> canReadResponse(this.responseType, converter))
+						//  lambda表达式中的this指的是所在的外部类，而匿名内部类中this指的是匿名内部类当前对象。
 						.flatMap(this::getSupportedMediaTypes)
 						.distinct()
 						.sorted(MediaType.SPECIFICITY_COMPARATOR)

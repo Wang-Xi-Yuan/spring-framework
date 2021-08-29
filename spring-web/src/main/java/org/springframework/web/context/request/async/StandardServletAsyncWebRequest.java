@@ -38,7 +38,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * support enabled using the Servlet API or by adding an
  * <code>&ltasync-supported&gttrue&lt/async-supported&gt</code> element to servlet and filter
  * declarations in {@code web.xml}.
- *
+ * <async-supported>true</async-supported>
  * @author Rossen Stoyanchev
  * @since 3.2
  */

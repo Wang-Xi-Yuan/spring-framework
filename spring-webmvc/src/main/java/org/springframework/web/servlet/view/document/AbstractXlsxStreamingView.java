@@ -53,7 +53,7 @@ public abstract class AbstractXlsxStreamingView extends AbstractXlsxView {
 	protected void renderWorkbook(Workbook workbook, HttpServletResponse response) throws IOException {
 		super.renderWorkbook(workbook, response);
 
-		// Dispose of temporary files in case of streaming variant...
+		// Dispose of temporary files in case of streaming variant...处理临时文件，以防流变体…
 		((SXSSFWorkbook) workbook).dispose();
 	}
 

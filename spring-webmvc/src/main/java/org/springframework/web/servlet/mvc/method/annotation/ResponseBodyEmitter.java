@@ -69,7 +69,7 @@ public class ResponseBodyEmitter {
 	@Nullable
 	private Handler handler;
 
-	/** Store send data before handler is initialized. */
+	/** Store send data before handler is initialized.  在处理程序初始化之前存储发送数据 */
 	private final Set<DataWithMediaType> earlySendAttempts = new LinkedHashSet<>(8);
 
 	/** Store successful completion before the handler is initialized. */

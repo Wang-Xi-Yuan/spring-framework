@@ -263,6 +263,7 @@ public class HandlerMethod {
 
 	/**
 	 * Return the associated response status reason, if any.
+	 * 如果有的话，返回相关的响应状态原因。
 	 * @since 4.3.8
 	 * @see ResponseStatus#reason()
 	 */

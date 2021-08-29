@@ -70,6 +70,7 @@ public class Jaxb2RootElementHttpMessageConverter extends AbstractJaxb2HttpMessa
 
 	/**
 	 * Indicate whether DTD parsing should be supported.
+	 * 指示是否应该支持DTD解析。
 	 * <p>Default is {@code false} meaning that DTD is disabled.
 	 */
 	public void setSupportDtd(boolean supportDtd) {
@@ -85,7 +86,8 @@ public class Jaxb2RootElementHttpMessageConverter extends AbstractJaxb2HttpMessa
 
 	/**
 	 * Indicate whether external XML entities are processed when converting to a Source.
-	 * <p>Default is {@code false}, meaning that external entities are not resolved.
+	 * 指示在转换为源时是否处理外部XML实体。
+	 * <p>Default is {@code false}, meaning that external entities are not resolved.意味着外部实体没有被解决。
 	 * <p><strong>Note:</strong> setting this option to {@code true} also
 	 * automatically sets {@link #setSupportDtd} to {@code true}.
 	 */
