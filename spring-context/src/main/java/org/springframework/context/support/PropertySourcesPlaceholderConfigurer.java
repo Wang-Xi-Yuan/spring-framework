@@ -57,10 +57,10 @@ import org.springframework.util.StringValueResolver;
  *
  * @author Chris Beams
  * @author Juergen Hoeller
- * @since 3.1
  * @see org.springframework.core.env.ConfigurableEnvironment
  * @see org.springframework.beans.factory.config.PlaceholderConfigurerSupport
  * @see org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+ * @since 3.1
  */
 public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerSupport implements EnvironmentAware {
 
@@ -91,15 +91,17 @@ public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerS
 	 * Customize the set of {@link PropertySources} to be used by this configurer.
 	 * <p>Setting this property indicates that environment property sources and
 	 * local properties should be ignored.
+	 *
 	 * @see #postProcessBeanFactory
 	 */
 	public void setPropertySources(PropertySources propertySources) {
-		this.propertySources = new MutablePropertySources(propertySources);
+		this.propertySources = new MutablePropertySources (propertySources);
 	}
 
 	/**
 	 * {@code PropertySources} from the given {@link Environment}
 	 * will be searched when replacing ${...} placeholders.
+	 *
 	 * @see #setPropertySources
 	 * @see #postProcessBeanFactory
 	 */
@@ -127,34 +129,32 @@ public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerS
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		if (this.propertySources == null) {
-			this.propertySources = new MutablePropertySources();
+			this.propertySources = new MutablePropertySources ();
 			if (this.environment != null) {
-				this.propertySources.addLast(
-					new PropertySource<Environment>(ENVIRONMENT_PROPERTIES_PROPERTY_SOURCE_NAME, this.environment) {
-						@Override
-						@Nullable
-						public String getProperty(String key) {
-							return this.source.getProperty(key);
+				this.propertySources.addLast (
+						new PropertySource<Environment> (ENVIRONMENT_PROPERTIES_PROPERTY_SOURCE_NAME, this.environment) {
+							@Override
+							@Nullable
+							public String getProperty(String key) {
+								return this.source.getProperty (key);
+							}
 						}
-					}
 				);
 			}
 			try {
 				PropertySource<?> localPropertySource =
-						new PropertiesPropertySource(LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, mergeProperties());
+						new PropertiesPropertySource (LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, mergeProperties ());
 				if (this.localOverride) {
-					this.propertySources.addFirst(localPropertySource);
+					this.propertySources.addFirst (localPropertySource);
+				} else {
+					this.propertySources.addLast (localPropertySource);
 				}
-				else {
-					this.propertySources.addLast(localPropertySource);
-				}
-			}
-			catch (IOException ex) {
-				throw new BeanInitializationException("Could not load properties", ex);
+			} catch (IOException ex) {
+				throw new BeanInitializationException ("Could not load properties", ex);
 			}
 		}
 
-		processProperties(beanFactory, new PropertySourcesPropertyResolver(this.propertySources));
+		processProperties (beanFactory, new PropertySourcesPropertyResolver (this.propertySources));
 		this.appliedPropertySources = this.propertySources;
 	}
 
@@ -163,48 +163,50 @@ public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerS
 	 * placeholders with values from the given properties.
 	 */
 	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess,
-			final ConfigurablePropertyResolver propertyResolver) throws BeansException {
+									 final ConfigurablePropertyResolver propertyResolver) throws BeansException {
 
-		propertyResolver.setPlaceholderPrefix(this.placeholderPrefix);
-		propertyResolver.setPlaceholderSuffix(this.placeholderSuffix);
-		propertyResolver.setValueSeparator(this.valueSeparator);
+		propertyResolver.setPlaceholderPrefix (this.placeholderPrefix);
+		propertyResolver.setPlaceholderSuffix (this.placeholderSuffix);
+		propertyResolver.setValueSeparator (this.valueSeparator);
 
 		StringValueResolver valueResolver = strVal -> {
 			String resolved = (this.ignoreUnresolvablePlaceholders ?
-					propertyResolver.resolvePlaceholders(strVal) :
-					propertyResolver.resolveRequiredPlaceholders(strVal));
+					propertyResolver.resolvePlaceholders (strVal) :
+					propertyResolver.resolveRequiredPlaceholders (strVal));
 			if (this.trimValues) {
-				resolved = resolved.trim();
+				resolved = resolved.trim ();
 			}
-			return (resolved.equals(this.nullValue) ? null : resolved);
+			return (resolved.equals (this.nullValue) ? null : resolved);
 		};
 
-		doProcessProperties(beanFactoryToProcess, valueResolver);
+		doProcessProperties (beanFactoryToProcess, valueResolver);
 	}
 
 	/**
 	 * Implemented for compatibility with
 	 * {@link org.springframework.beans.factory.config.PlaceholderConfigurerSupport}.
+	 *
+	 * @throws UnsupportedOperationException in this implementation
 	 * @deprecated in favor of
 	 * {@link #processProperties(ConfigurableListableBeanFactory, ConfigurablePropertyResolver)}
-	 * @throws UnsupportedOperationException in this implementation
 	 */
 	@Override
 	@Deprecated
 	protected void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props) {
-		throw new UnsupportedOperationException(
+		throw new UnsupportedOperationException (
 				"Call processProperties(ConfigurableListableBeanFactory, ConfigurablePropertyResolver) instead");
 	}
 
 	/**
 	 * Return the property sources that were actually applied during
 	 * {@link #postProcessBeanFactory(ConfigurableListableBeanFactory) post-processing}.
+	 *
 	 * @return the property sources that were applied
 	 * @throws IllegalStateException if the property sources have not yet been applied
 	 * @since 4.0
 	 */
 	public PropertySources getAppliedPropertySources() throws IllegalStateException {
-		Assert.state(this.appliedPropertySources != null, "PropertySources have not yet been applied");
+		Assert.state (this.appliedPropertySources != null, "PropertySources have not yet been applied");
 		return this.appliedPropertySources;
 	}
 
