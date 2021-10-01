@@ -29,6 +29,7 @@ import org.springframework.lang.Nullable;
  * through the {@link JsonFormat} utility. If no special parser or printer configuration is
  * given, default variants will be used instead.
  *
+ * 如果没有特殊的解析器或打印机配置给定，将使用默认变体代替。
  * <p>Requires Protobuf 3.x and {@code "com.google.protobuf:protobuf-java-util"} 3.x,
  * with 3.3 or higher recommended.
  *

@@ -87,7 +87,7 @@ import org.springframework.web.util.UrlPathHelper;
  * <p>This handler also properly evaluates the {@code Last-Modified} header
  * (if present) so that a {@code 304} status code will be returned as appropriate,
  * avoiding unnecessary overhead for resources that are already cached by the client.
- *
+ * 避免客户端已经缓存的资源的不必要开销
  * @author Keith Donald
  * @author Jeremy Grelle
  * @author Juergen Hoeller
@@ -372,6 +372,7 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		// 资源解析加载
 		resolveResourceLocations();
 
 		if (logger.isWarnEnabled() && CollectionUtils.isEmpty(this.locations)) {
@@ -385,7 +386,7 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 
 		initAllowedLocations();
 
-		// Initialize immutable resolver and transformer chains
+		// Initialize immutable resolver and transformer chains 初始化不可变解析器和转换器链
 		this.resolverChain = new DefaultResourceResolverChain(this.resourceResolvers);
 		this.transformerChain = new DefaultResourceTransformerChain(this.resolverChain, this.resourceTransformers);
 
@@ -410,10 +411,10 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 	}
 
 	private void resolveResourceLocations() {
+		// locationValues和locations要求只设置一个，不用都设置
 		if (CollectionUtils.isEmpty(this.locationValues)) {
 			return;
-		}
-		else if (!CollectionUtils.isEmpty(this.locations)) {
+		}else if (!CollectionUtils.isEmpty(this.locations)) {
 			throw new IllegalArgumentException("Please set either Resource-based \"locations\" or " +
 					"String-based \"locationValues\", but not both.");
 		}
@@ -434,6 +435,7 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 				if (endIndex == -1) {
 					throw new IllegalArgumentException("Invalid charset syntax in location: " + location);
 				}
+				// 获取charset
 				String value = location.substring(URL_RESOURCE_CHARSET_PREFIX.length(), endIndex);
 				charset = Charset.forName(value);
 				location = location.substring(endIndex + 1);
@@ -504,7 +506,7 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 	public void handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// For very general mappings (e.g. "/") we need to check 404 first
+		// For very general mappings (e.g. "/") we need to check 404 first 获取静态资源
 		Resource resource = getResource(request);
 		if (resource == null) {
 			logger.debug("Resource not found");
@@ -517,20 +519,21 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 			return;
 		}
 
-		// Supported methods and required session
+		// Supported methods and required session 检查请求方法和会话是否支持
 		checkRequest(request);
 
-		// Header phase
+		// Header phase 校验请求内容是否有修改，没有则利用浏览器缓存
 		if (isUseLastModified() && new ServletWebRequest(request, response).checkNotModified(resource.lastModified())) {
 			logger.trace("Resource not modified");
 			return;
 		}
 
-		// Apply cache settings, if any
+		// Apply cache settings, if any 应用缓存设置(如果有的话)
 		prepareResponse(response);
 
-		// Check the media type for the resource
+		// Check the media type for the resource 检查资源的媒体类型
 		MediaType mediaType = getMediaType(request, resource);
+		// 根据资源的媒体类型设置响应头
 		setHeaders(response, resource, mediaType);
 
 		// Content phase
@@ -538,17 +541,17 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 		if (request.getHeader(HttpHeaders.RANGE) == null) {
 			Assert.state(this.resourceHttpMessageConverter != null, "Not initialized");
 			this.resourceHttpMessageConverter.write(resource, mediaType, outputMessage);
-		}
-		else {
+		}else {
+			// 请求头含有HttpHeaders.RANGE，表示断点续传
 			Assert.state(this.resourceRegionHttpMessageConverter != null, "Not initialized");
 			ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(request);
 			try {
 				List<HttpRange> httpRanges = inputMessage.getHeaders().getRange();
+				// 断点续传响应的状态码并不是200,而是206,206表示服务器已经完成部分获取资源请求。
 				response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
 				this.resourceRegionHttpMessageConverter.write(
 						HttpRange.toResourceRegions(httpRanges, resource), mediaType, outputMessage);
-			}
-			catch (IllegalArgumentException ex) {
+			}catch (IllegalArgumentException ex) {
 				response.setHeader(HttpHeaders.CONTENT_RANGE, "bytes */" + resource.contentLength());
 				response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			}
@@ -562,7 +565,7 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 			throw new IllegalStateException("Required request attribute '" +
 					HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE + "' is not set");
 		}
-
+		// 处理路径
 		path = processPath(path);
 		if (!StringUtils.hasText(path) || isInvalidPath(path)) {
 			return null;
@@ -585,8 +588,8 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 	 * Process the given resource path.
 	 * <p>The default implementation replaces:
 	 * <ul>
-	 * <li>Backslash with forward slash.
-	 * <li>Duplicate occurrences of slash with a single slash.
+	 * <li>Backslash with forward slash. 反斜杠和正斜杠。
+	 * <li>Duplicate occurrences of slash with a single slash.单杠重复出现。
 	 * <li>Any combination of leading slash and control characters (00-1F and 7F)
 	 * with a single "/" or "". For example {@code "  / // foo/bar"}
 	 * becomes {@code "/foo/bar"}.
@@ -759,8 +762,7 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 		long length = resource.contentLength();
 		if (length > Integer.MAX_VALUE) {
 			response.setContentLengthLong(length);
-		}
-		else {
+		}else {
 			response.setContentLength((int) length);
 		}
 
@@ -783,7 +785,7 @@ public class ResourceHttpRequestHandler extends WebContentGenerator
 				}
 			});
 		}
-
+		// 响应头里面设置了HttpHeaders.ACCEPT_RANGES
 		response.setHeader(HttpHeaders.ACCEPT_RANGES, "bytes");
 	}
 

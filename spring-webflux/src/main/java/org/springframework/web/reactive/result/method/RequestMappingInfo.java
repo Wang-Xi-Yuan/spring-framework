@@ -147,6 +147,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 
 	/**
 	 * Return the mapping paths that are not patterns.
+	 * 返回非模式的映射路径。
 	 * @since 5.3
 	 */
 	public Set<String> getDirectPaths() {
@@ -573,6 +574,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 			}
 			List<PathPattern> result = new ArrayList<>(patterns.length);
 			for (String path : patterns) {
+				// 这里不添加"/" 他会帮我们添加上
 				if (StringUtils.hasText(path) && !path.startsWith("/")) {
 					path = "/" + path;
 				}

@@ -376,6 +376,7 @@ public class RedirectViewTests {
 		rv.render(map, request, response);
 
 		assertThat(rv.queryPropertiesCalled).as("queryProperties() should have been called.").isTrue();
+		System.out.println (this.response.getRedirectedUrl());
 		assertThat(this.response.getRedirectedUrl()).isEqualTo(expectedUrl);
 	}
 
@@ -394,6 +395,7 @@ public class RedirectViewTests {
 
 		/**
 		 * Test whether this callback method is called with correct args
+		 * 测试是否用正确的参数调用此回调方法
 		 */
 		@Override
 		protected Map<String, Object> queryProperties(Map<String, Object> model) {

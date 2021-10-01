@@ -834,12 +834,16 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	 * Also see {@link #addDefaultHttpMessageConverters} for adding default message converters.
 	 */
 	protected final List<HttpMessageConverter<?>> getMessageConverters() {
+		// HttpMessageConverter并没有实现Order接口，那么使用时解析的顺序就是按照加入时候的顺序
 		if (this.messageConverters == null) {
 			this.messageConverters = new ArrayList<>();
+			// 这里配置会将默认的覆盖掉
 			configureMessageConverters(this.messageConverters);
 			if (this.messageConverters.isEmpty()) {
+				// 提供的默认的HttpMessageConverter
 				addDefaultHttpMessageConverters(this.messageConverters);
 			}
+			// 这里可以拓展
 			extendMessageConverters(this.messageConverters);
 		}
 		return this.messageConverters;
@@ -911,8 +915,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 				builder.applicationContext(this.applicationContext);
 			}
 			messageConverters.add(new MappingJackson2HttpMessageConverter(builder.build()));
-		}
-		else if (gsonPresent) {
+		}else if (gsonPresent) {
 			messageConverters.add(new GsonHttpMessageConverter());
 		}
 		else if (jsonbPresent) {

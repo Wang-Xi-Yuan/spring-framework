@@ -20,9 +20,9 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.support.AbstractCacheManager;
 
 /**
- * Base class for CacheManager implementations that want to support built-in
- * awareness of Spring-managed transactions. This usually needs to be switched
- * on explicitly through the {@link #setTransactionAware} bean property.
+ * Base class for CacheManager implementations that want to support built-in awareness of Spring-managed transactions.
+ * This usually needs to be switched on explicitly through the {@link #setTransactionAware} bean property.
+ * 希望支持spring管理事务的内置感知的CacheManager实现的基类.
  *
  * @author Juergen Hoeller
  * @since 3.2

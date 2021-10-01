@@ -127,6 +127,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 
 	/**
 	 * Set static attributes as a CSV string.
+	 * 将静态属性设置为CSV字符串。
 	 * Format is: attname0={value1},attname1={value1}
 	 * <p>"Static" attributes are fixed attributes that are specified in
 	 * the View instance configuration. "Dynamic" attributes, on the other hand,
@@ -241,6 +242,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 
 	/**
 	 * Return whether to add path variables to the model or not.
+	 * 返回是否向模型添加路径变量。
 	 */
 	public boolean isExposePathVariables() {
 		return this.exposePathVariables;
@@ -310,9 +312,11 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 					", model " + (model != null ? model : Collections.emptyMap()) +
 					(this.staticAttributes.isEmpty() ? "" : ", static attributes " + this.staticAttributes));
 		}
-
+		// 合并所有模型数据
 		Map<String, Object> mergedModel = createMergedOutputModel(model, request, response);
+		// 当视图需要生成下载内容时，需要设置响应头
 		prepareResponse(request, response);
+		// 渲染，留给子类拓展
 		renderMergedOutputModel(mergedModel, getRequestToExpose(request), response);
 	}
 
@@ -327,7 +331,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 		Map<String, Object> pathVars = (this.exposePathVariables ?
 				(Map<String, Object>) request.getAttribute(View.PATH_VARIABLES) : null);
 
-		// Consolidate static and dynamic model attributes.
+		// Consolidate static and dynamic model attributes.合并静态和动态模型属性。
 		int size = this.staticAttributes.size();
 		size += (model != null ? model.size() : 0);
 		size += (pathVars != null ? pathVars.size() : 0);
@@ -341,7 +345,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 			mergedModel.putAll(model);
 		}
 
-		// Expose RequestContext?
+		// Expose RequestContext? 暴露RequestContext
 		if (this.requestContextAttribute != null) {
 			mergedModel.put(this.requestContextAttribute, createRequestContext(request, response, mergedModel));
 		}
@@ -374,7 +378,9 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * @param response current HTTP response
 	 */
 	protected void prepareResponse(HttpServletRequest request, HttpServletResponse response) {
+		// 返回该视图是否生成下载内容，返回该视图是否生成下载内容
 		if (generatesDownloadContent()) {
+			// https://www.cnblogs.com/yycc/p/7592810.html
 			response.setHeader("Pragma", "private");
 			response.setHeader("Cache-Control", "private, must-revalidate");
 		}
@@ -383,6 +389,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	/**
 	 * Return whether this view generates download content
 	 * (typically binary content like PDF or Excel files).
+	 * 返回该视图是否生成下载内容，返回该视图是否生成下载内容
 	 * <p>The default implementation returns {@code false}. Subclasses are
 	 * encouraged to return {@code true} here if they know that they are
 	 * generating download content that requires temporary caching on the

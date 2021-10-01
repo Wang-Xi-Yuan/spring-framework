@@ -93,6 +93,7 @@ public class HttpMessageConverterExtractor<T> implements ResponseExtractor<T> {
 		MediaType contentType = getContentType(responseWrapper);
 
 		try {
+			// 这里进行HttpMessageConverter转换
 			for (HttpMessageConverter<?> messageConverter : this.messageConverters) {
 				if (messageConverter instanceof GenericHttpMessageConverter) {
 					GenericHttpMessageConverter<?> genericMessageConverter =
@@ -115,12 +116,10 @@ public class HttpMessageConverterExtractor<T> implements ResponseExtractor<T> {
 					}
 				}
 			}
-		}
-		catch (IOException | HttpMessageNotReadableException ex) {
+		}catch (IOException | HttpMessageNotReadableException ex) {
 			throw new RestClientException("Error while extracting response for type [" +
 					this.responseType + "] and content type [" + contentType + "]", ex);
 		}
-
 		throw new UnknownContentTypeException(this.responseType, contentType,
 				response.getRawStatusCode(), response.getStatusText(), response.getHeaders(),
 				getResponseBody(response));

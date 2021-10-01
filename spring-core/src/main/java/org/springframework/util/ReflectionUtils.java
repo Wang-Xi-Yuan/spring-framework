@@ -354,7 +354,7 @@ public abstract class ReflectionUtils {
 	 * @throws IllegalStateException if introspection fails
 	 */
 	public static void doWithMethods(Class<?> clazz, MethodCallback mc, @Nullable MethodFilter mf) {
-		// Keep backing up the inheritance hierarchy.
+		// Keep backing up the inheritance hierarchy. 继续备份继承层次结构。
 		Method[] methods = getDeclaredMethods(clazz, false);
 		for (Method method : methods) {
 			if (mf != null && !mf.matches(method)) {
@@ -369,8 +369,7 @@ public abstract class ReflectionUtils {
 		}
 		if (clazz.getSuperclass() != null && (mf != USER_DECLARED_METHODS || clazz.getSuperclass() != Object.class)) {
 			doWithMethods(clazz.getSuperclass(), mc, mf);
-		}
-		else if (clazz.isInterface()) {
+		}else if (clazz.isInterface()) {
 			for (Class<?> superIfc : clazz.getInterfaces()) {
 				doWithMethods(superIfc, mc, mf);
 			}
@@ -470,8 +469,7 @@ public abstract class ReflectionUtils {
 						result[index] = defaultMethod;
 						index++;
 					}
-				}
-				else {
+				}else {
 					result = declaredMethods;
 				}
 				declaredMethodsCache.put(clazz, (result.length == 0 ? EMPTY_METHOD_ARRAY : result));
@@ -481,6 +479,7 @@ public abstract class ReflectionUtils {
 						"] from ClassLoader [" + clazz.getClassLoader() + "]", ex);
 			}
 		}
+		// 拷
 		return (result.length == 0 || !defensive) ? result : result.clone();
 	}
 

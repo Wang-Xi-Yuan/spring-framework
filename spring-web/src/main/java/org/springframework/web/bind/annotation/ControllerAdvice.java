@@ -55,6 +55,7 @@ import org.springframework.stereotype.Component;
  * advice will still be preferred over any match (whether root or cause level)
  * on a lower-priority advice bean. As a consequence, please declare your primary
  * root exception mappings on a prioritized advice bean with a corresponding order.
+ * 定义多个ControllerAdvice类，如果优先级不同，异常匹配将和异常层级无关，优先级高的匹配了将使用改异常处理方法
  *
  * <p>By default, the methods in an {@code @ControllerAdvice} apply globally to
  * all controllers. Use selectors such as {@link #annotations},

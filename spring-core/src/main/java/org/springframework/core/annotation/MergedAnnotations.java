@@ -471,6 +471,7 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * Perform a full search of the entire type hierarchy, including
 		 * superclasses and implemented interfaces. Superclass annotations do
 		 * not need to be meta-annotated with {@link Inherited @Inherited}.
+		 * 对整个类型层次结构执行完整搜索,包括父类和接口
 		 */
 		TYPE_HIERARCHY,
 

@@ -115,8 +115,7 @@ public final class ParserContext {
 		CompositeComponentDefinition containingComponent = getContainingComponent();
 		if (containingComponent != null) {
 			containingComponent.addNestedComponent(component);
-		}
-		else {
+		}else {
 			this.readerContext.fireComponentRegistered(component);
 		}
 	}

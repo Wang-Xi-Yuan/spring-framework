@@ -121,6 +121,7 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 
 	/**
 	 * Return if caching is enabled.
+	 * 如果启用了缓存，返回。
 	 */
 	public boolean isCache() {
 		return (this.cacheLimit > 0);
@@ -170,10 +171,10 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 	@Override
 	@Nullable
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
+		// 是否启用了缓存
 		if (!isCache()) {
 			return createView(viewName, locale);
-		}
-		else {
+		}else {
 			Object cacheKey = getCacheKey(viewName, locale);
 			View view = this.viewAccessCache.get(cacheKey);
 			if (view == null) {
@@ -191,8 +192,7 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 						}
 					}
 				}
-			}
-			else {
+			}else {
 				if (logger.isTraceEnabled()) {
 					logger.trace(formatKey(cacheKey) + "served from cache");
 				}

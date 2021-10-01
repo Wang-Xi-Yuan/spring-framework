@@ -41,7 +41,7 @@ class FlightRecorderStartupStep implements StartupStep {
 
 
 	public FlightRecorderStartupStep(long id, String name, long parentId,
-			Consumer<FlightRecorderStartupStep> recordingCallback) {
+									 Consumer<FlightRecorderStartupStep> recordingCallback) {
 
 		this.event = new FlightRecorderStartupEvent(id, name, parentId);
 		this.event.begin();

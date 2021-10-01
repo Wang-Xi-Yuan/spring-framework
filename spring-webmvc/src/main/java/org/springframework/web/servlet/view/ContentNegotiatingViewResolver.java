@@ -191,8 +191,7 @@ public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 					this.viewResolvers.add(viewResolver);
 				}
 			}
-		}
-		else {
+		}else {
 			for (int i = 0; i < this.viewResolvers.size(); i++) {
 				ViewResolver vr = this.viewResolvers.get(i);
 				if (matchingBeans.contains(vr)) {
@@ -223,9 +222,12 @@ public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
 		RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
 		Assert.state(attrs instanceof ServletRequestAttributes, "No current ServletRequestAttributes");
+		// 获取客户端要求的媒体类型，默认获取请求头中Accept信息
 		List<MediaType> requestedMediaTypes = getMediaTypes(((ServletRequestAttributes) attrs).getRequest());
 		if (requestedMediaTypes != null) {
+			// 让其他的视图解析器将逻辑视图解析为视图，并加入候选视图列表中
 			List<View> candidateViews = getCandidateViews(viewName, locale, requestedMediaTypes);
+			// 在候选视图中找到能产生对应内容类型的视图，第一个匹配的视图会用来渲染模型
 			View bestView = getBestView(candidateViews, requestedMediaTypes, attrs);
 			if (bestView != null) {
 				return bestView;
@@ -234,14 +236,13 @@ public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 
 		String mediaTypeInfo = logger.isDebugEnabled() && requestedMediaTypes != null ?
 				" given " + requestedMediaTypes.toString() : "";
-
+		// 未找到客户端要求类型的视图，默认返回406的状态码
 		if (this.useNotAcceptableStatusCode) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Using 406 NOT_ACCEPTABLE" + mediaTypeInfo);
 			}
 			return NOT_ACCEPTABLE_VIEW;
-		}
-		else {
+		}else {
 			logger.debug("View remains unresolved" + mediaTypeInfo);
 			return null;
 		}
@@ -270,8 +271,7 @@ public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 			List<MediaType> selectedMediaTypes = new ArrayList<>(compatibleMediaTypes);
 			MediaType.sortBySpecificityAndQuality(selectedMediaTypes);
 			return selectedMediaTypes;
-		}
-		catch (HttpMediaTypeNotAcceptableException ex) {
+		}catch (HttpMediaTypeNotAcceptableException ex) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(ex.getMessage());
 			}
@@ -285,8 +285,7 @@ public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 				request.getAttribute(HandlerMapping.PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
 		if (!CollectionUtils.isEmpty(mediaTypes)) {
 			return new ArrayList<>(mediaTypes);
-		}
-		else {
+		}else {
 			return Collections.singletonList(MediaType.ALL);
 		}
 	}
@@ -312,9 +311,11 @@ public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport
 					candidateViews.add(view);
 				}
 				for (MediaType requestedMediaType : requestedMediaTypes) {
+					// 根据MediaType获取文件拓展名
 					List<String> extensions = this.contentNegotiationManager.resolveFileExtensions(requestedMediaType);
 					for (String extension : extensions) {
 						String viewNameWithExtension = viewName + '.' + extension;
+						// 逻辑视图名加上拓展名之后进行解析，解析成功后加入候选View中
 						view = viewResolver.resolveViewName(viewNameWithExtension, locale);
 						if (view != null) {
 							candidateViews.add(view);

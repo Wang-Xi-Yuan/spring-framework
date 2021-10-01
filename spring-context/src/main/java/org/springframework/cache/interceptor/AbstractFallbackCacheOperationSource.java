@@ -90,12 +90,13 @@ public abstract class AbstractFallbackCacheOperationSource implements CacheOpera
 		}
 
 		Object cacheKey = getCacheKey(method, targetClass);
+		// 这里缓存的是缓存操作
 		Collection<CacheOperation> cached = this.attributeCache.get(cacheKey);
 
 		if (cached != null) {
 			return (cached != NULL_CACHING_ATTRIBUTE ? cached : null);
-		}
-		else {
+		}else {
+			// 分析缓存操作
 			Collection<CacheOperation> cacheOps = computeCacheOperations(method, targetClass);
 			if (cacheOps != null) {
 				if (logger.isTraceEnabled()) {

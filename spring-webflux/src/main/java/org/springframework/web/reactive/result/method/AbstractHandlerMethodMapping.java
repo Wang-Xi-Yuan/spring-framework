@@ -156,7 +156,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	@Override
 	public void afterPropertiesSet() {
-
+		// 在初始化时检测处理程序方法。
 		initHandlerMethods();
 
 		// Total includes detected mappings + explicit registrations via registerMapping..
@@ -181,13 +181,13 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				Class<?> beanType = null;
 				try {
 					beanType = obtainApplicationContext().getType(beanName);
-				}
-				catch (Throwable ex) {
+				}catch (Throwable ex) {
 					// An unresolvable bean type, probably from a lazy bean - let's ignore it.
 					if (logger.isTraceEnabled()) {
 						logger.trace("Could not resolve type for bean '" + beanName + "'", ex);
 					}
 				}
+				// isHandler方法就是判断类上是否有@Controller或者@RequestMapping注解
 				if (beanType != null && isHandler(beanType)) {
 					detectHandlerMethods(beanName);
 				}
@@ -206,13 +206,16 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 		if (handlerType != null) {
 			final Class<?> userType = ClassUtils.getUserClass(handlerType);
+			// MetadataLookup是一个函数式回调接口 这里定义的逻辑就是获取方法的映射信息，getMappingForMethod留给子类拓展
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> getMappingForMethod(method, userType));
 			if (logger.isTraceEnabled()) {
 				logger.trace(formatMappings(userType, methods));
 			}
 			methods.forEach((method, mapping) -> {
+				// 找到能调用的方法
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
+				// 注册一个处理方法及其唯一映射
 				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
@@ -236,6 +239,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	/**
 	 * Register a handler method and its unique mapping. Invoked at startup for
 	 * each detected handler method.
+	 * 注册一个处理程序方法及其唯一映射。在启动时调用，用于每个检测到的处理程序方法。
 	 * @param handler the bean name of the handler or the handler instance
 	 * @param method the method to register
 	 * @param mapping the mapping conditions associated with the handler method
@@ -415,6 +419,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	/**
 	 * Provide the mapping for a handler method. A method for which no
 	 * mapping can be provided is not a handler method.
+	 * 为处理程序方法提供映射。一个方法如果没有映射那就不是一个处理程序方法。
 	 * @param method the method to provide a mapping for
 	 * @param handlerType the handler type, possibly a sub-type of the method's
 	 * declaring class
@@ -511,23 +516,23 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		public void register(T mapping, Object handler, Method method) {
 			this.readWriteLock.writeLock().lock();
 			try {
+				// 构建处理方法
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
+				// 校验唯一性 一个处理方法对应一段映射
 				validateMethodMapping(handlerMethod, mapping);
 
 				Set<String> directPaths = AbstractHandlerMethodMapping.this.getDirectPaths(mapping);
 				for (String path : directPaths) {
 					this.pathLookup.add(path, mapping);
 				}
-
+				// 提取并返回映射的CORS配置。
 				CorsConfiguration config = initCorsConfiguration(handler, method, mapping);
 				if (config != null) {
 					config.validateAllowCredentials();
 					this.corsLookup.put(handlerMethod, config);
 				}
-
 				this.registry.put(mapping, new MappingRegistration<>(mapping, handlerMethod, directPaths));
-			}
-			finally {
+			}finally {
 				this.readWriteLock.writeLock().unlock();
 			}
 		}

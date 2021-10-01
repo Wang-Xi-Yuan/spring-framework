@@ -100,8 +100,7 @@ public class TransactionAwareCacheDecorator implements Cache {
 					TransactionAwareCacheDecorator.this.targetCache.put(key, value);
 				}
 			});
-		}
-		else {
+		}else {
 			this.targetCache.put(key, value);
 		}
 	}

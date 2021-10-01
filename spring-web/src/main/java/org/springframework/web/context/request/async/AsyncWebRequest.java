@@ -56,9 +56,9 @@ public interface AsyncWebRequest extends NativeWebRequest {
 	void addCompletionHandler(Runnable runnable);
 
 	/**
-	 * Mark the start of asynchronous request processing so that when the main
-	 * processing thread exits, the response remains open for further processing
-	 * in another thread.
+	 * Mark the start of asynchronous request processing so that when the main  processing thread exits
+	 * the response remains open for further processing in another thread.
+	 * 标记异步请求处理的开始，以便当主处理线程退出时, 响应保持打开状态，以便在另一个线程中进行进一步处理
 	 * @throws IllegalStateException if async processing has completed or is not supported
 	 */
 	void startAsync();
@@ -71,8 +71,8 @@ public interface AsyncWebRequest extends NativeWebRequest {
 	boolean isAsyncStarted();
 
 	/**
-	 * Dispatch the request to the container in order to resume processing after
-	 * concurrent execution in an application thread.
+	 * Dispatch the request to the container in order to resume processing after concurrent execution in an application thread.
+	 *
 	 */
 	void dispatch();
 

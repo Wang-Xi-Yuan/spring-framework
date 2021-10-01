@@ -48,7 +48,7 @@ public interface View {
 
 	/**
 	 * Name of the {@link HttpServletRequest} attribute that contains the response status code.
-	 * <p>Note: This attribute is not required to be supported by all View implementations.
+	 * <p>Note: This attribute is not required to be supported by all View implementations. 并非所有视图实现都需要支持此属性
 	 * @since 3.0
 	 */
 	String RESPONSE_STATUS_ATTRIBUTE = View.class.getName() + ".responseStatus";

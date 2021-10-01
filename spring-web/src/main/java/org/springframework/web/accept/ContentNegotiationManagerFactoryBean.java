@@ -333,8 +333,7 @@ public class ContentNegotiationManagerFactoryBean
 				PathExtensionContentNegotiationStrategy strategy;
 				if (this.servletContext != null && !useRegisteredExtensionsOnly()) {
 					strategy = new ServletPathExtensionContentNegotiationStrategy(this.servletContext, this.mediaTypes);
-				}
-				else {
+				}else {
 					strategy = new PathExtensionContentNegotiationStrategy(this.mediaTypes);
 				}
 				strategy.setIgnoreUnknownExtensions(this.ignoreUnknownPathExtensions);
@@ -350,7 +349,8 @@ public class ContentNegotiationManagerFactoryBean
 					strategy.setUseRegisteredExtensionsOnly(this.useRegisteredExtensionsOnly);
 				}
 				else {
-					strategy.setUseRegisteredExtensionsOnly(true);  // backwards compatibility
+					// backwards compatibility  向后兼容
+					strategy.setUseRegisteredExtensionsOnly(true);
 				}
 				strategies.add(strategy);
 			}
@@ -364,8 +364,7 @@ public class ContentNegotiationManagerFactoryBean
 
 		this.contentNegotiationManager = new ContentNegotiationManager(strategies);
 
-		// Ensure media type mappings are available via ContentNegotiationManager#getMediaTypeMappings()
-		// independent of path extension or parameter strategies.
+		// Ensure media type mappings are available via ContentNegotiationManager#getMediaTypeMappings() independent of path extension or parameter strategies.
 
 		if (!CollectionUtils.isEmpty(this.mediaTypes) && !this.favorPathExtension && !this.favorParameter) {
 			this.contentNegotiationManager.addFileExtensionResolvers(

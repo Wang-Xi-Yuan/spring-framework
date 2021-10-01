@@ -526,6 +526,7 @@ public class MediaType extends MimeType implements Serializable {
 
 	/**
 	 * Return the quality factor, as indicated by a {@code q} parameter, if any.
+	 * 返回质量因子，如q参数所示(如果有的话)。
 	 * Defaults to {@code 1.0}.
 	 * @return the quality factor as double value
 	 */
@@ -551,6 +552,7 @@ public class MediaType extends MimeType implements Serializable {
 
 	/**
 	 * Indicate whether this {@code MediaType} is compatible with the given media type.
+	 * 指示此MediaType是否与给定的媒体类型兼容。
 	 * <p>For instance, {@code text/*} is compatible with {@code text/plain},
 	 * {@code text/html}, and vice versa. In effect, this method is similar to
 	 * {@link #includes}, except that it <b>is</b> symmetric.
@@ -566,6 +568,7 @@ public class MediaType extends MimeType implements Serializable {
 
 	/**
 	 * Return a replica of this instance with the quality value of the given {@code MediaType}.
+	 * 返回此实例的副本，并带有给定的MediaType的质量值。
 	 * @return the same instance if the given MediaType doesn't have a quality value,
 	 * or a new one otherwise
 	 */

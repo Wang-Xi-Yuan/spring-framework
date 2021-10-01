@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Role;
  * to enable proxy-based annotation-driven JSR-107 cache management.
  *
  * <p>Can safely be used alongside Spring's caching support.
- *
+ * 可以与Spring的缓存支持一起安全地使用。
  * @author Stephane Nicoll
  * @author Juergen Hoeller
  * @since 4.1

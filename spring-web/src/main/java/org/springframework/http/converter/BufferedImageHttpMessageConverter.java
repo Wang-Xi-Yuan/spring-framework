@@ -205,10 +205,10 @@ public class BufferedImageHttpMessageConverter implements HttpMessageConverter<B
 	}
 
 	private ImageInputStream createImageInputStream(InputStream is) throws IOException {
+		// cacheDir表示缓存目录
 		if (this.cacheDir != null) {
 			return new FileCacheImageInputStream(is, this.cacheDir);
-		}
-		else {
+		}else {
 			return new MemoryCacheImageInputStream(is);
 		}
 	}

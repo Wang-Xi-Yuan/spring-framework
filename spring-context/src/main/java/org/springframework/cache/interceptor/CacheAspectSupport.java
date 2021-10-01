@@ -276,7 +276,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	 */
 	protected CacheOperationMetadata getCacheOperationMetadata(
 			CacheOperation operation, Method method, Class<?> targetClass) {
-
+		// 缓存操作元数据 进行缓存
 		CacheOperationCacheKey cacheKey = new CacheOperationCacheKey(operation, method, targetClass);
 		CacheOperationMetadata metadata = this.metadataCache.get(cacheKey);
 		if (metadata == null) {
@@ -290,8 +290,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			CacheResolver operationCacheResolver;
 			if (StringUtils.hasText(operation.getCacheResolver())) {
 				operationCacheResolver = getBean(operation.getCacheResolver(), CacheResolver.class);
-			}
-			else if (StringUtils.hasText(operation.getCacheManager())) {
+			}else if (StringUtils.hasText(operation.getCacheManager())) {
 				CacheManager cacheManager = getBean(operation.getCacheManager(), CacheManager.class);
 				operationCacheResolver = new SimpleCacheResolver(cacheManager);
 			}
@@ -386,19 +385,19 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 					// or potentially also an IllegalArgumentException etc.
 					ReflectionUtils.rethrowRuntimeException(ex.getCause());
 				}
-			}
-			else {
+			}else {
 				// No caching required, only call the underlying method
+				// condition返回false后，将不会加入缓存
 				return invokeOperation(invoker);
 			}
 		}
 
 
-		// Process any early evictions
+		// Process any early evictions @CacheEvict注解解析
 		processCacheEvicts(contexts.get(CacheEvictOperation.class), true,
 				CacheOperationExpressionEvaluator.NO_RESULT);
 
-		// Check if we have a cached item matching the conditions
+		// Check if we have a cached item matching the conditions @Cacheable
 		Cache.ValueWrapper cacheHit = findCachedItem(contexts.get(CacheableOperation.class));
 
 		// Collect puts from any @Cacheable miss, if no cached item is found
@@ -415,8 +414,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			// If there are no put requests, just use the cache hit
 			cacheValue = cacheHit.get();
 			returnValue = wrapCacheValue(method, cacheValue);
-		}
-		else {
+		}else {
 			// Invoke the method if we don't have a cache hit
 			returnValue = invokeOperation(invoker);
 			cacheValue = unwrapReturnValue(returnValue);
@@ -475,8 +473,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 				if (!context.isConditionPassing(CacheOperationExpressionEvaluator.RESULT_UNAVAILABLE)) {
 					excluded.add(context);
 				}
-			}
-			catch (VariableNotAvailableException ex) {
+			}catch (VariableNotAvailableException ex) {
 				// Ignoring failure due to missing result, consider the cache put has to proceed
 			}
 		}
@@ -503,8 +500,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			if (operation.isCacheWide()) {
 				logInvalidating(context, operation, null);
 				doClear(cache, operation.isBeforeInvocation());
-			}
-			else {
+			}else {
 				if (key == null) {
 					key = generateKey(context, result);
 				}
@@ -580,6 +576,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	}
 
 	private boolean isConditionPassing(CacheOperationContext context, @Nullable Object result) {
+		// condition表达式计算
 		boolean passing = context.isConditionPassing(result);
 		if (!passing && logger.isTraceEnabled()) {
 			logger.trace("Cache condition failed on method " + context.metadata.method +
@@ -614,6 +611,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			for (CacheOperation op : operations) {
 				this.contexts.add(op.getClass(), getOperationContext(op, method, args, target, targetClass));
 			}
+			// 同步标识
 			this.sync = determineSyncFlag(method);
 		}
 
@@ -638,6 +636,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 					break;
 				}
 			}
+			// 缓存同步 不支持unless，cache只能一个
 			if (syncEnabled) {
 				if (this.contexts.size() > 1) {
 					throw new IllegalStateException(
@@ -756,6 +755,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			return combinedArgs;
 		}
 
+		// condition表达式计算
 		protected boolean isConditionPassing(@Nullable Object result) {
 			if (this.conditionPassing == null) {
 				if (StringUtils.hasText(this.metadata.operation.getCondition())) {

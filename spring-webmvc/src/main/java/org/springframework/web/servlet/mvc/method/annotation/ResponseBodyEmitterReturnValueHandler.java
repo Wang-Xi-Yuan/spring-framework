@@ -165,11 +165,10 @@ public class ResponseBodyEmitterReturnValueHandler implements HandlerMethodRetur
 		}
 		emitter.extendResponse(outputMessage);
 
-		// At this point we know we're streaming..
+		// At this point we know we're streaming.. 流式场景不需要对响应缓存
 		ShallowEtagHeaderFilter.disableContentCaching(request);
 
-		// Wrap the response to ignore further header changes
-		// Headers will be flushed at the first write
+		// Wrap the response to ignore further header changes,Headers will be flushed at the first write
 		outputMessage = new StreamingServletServerHttpResponse(outputMessage);
 
 		HttpMessageConvertingHandler handler;
@@ -252,8 +251,8 @@ public class ResponseBodyEmitterReturnValueHandler implements HandlerMethodRetur
 
 
 	/**
-	 * Wrap to silently ignore header changes HttpMessageConverter's that would
-	 * otherwise cause HttpHeaders to raise exceptions.
+	 * Wrap to silently ignore header changes HttpMessageConverter's that would otherwise cause HttpHeaders to raise exceptions.
+	 * Wrap以静默方式忽略HttpMessageConverter的头更改，否则会导致HttpHeaders引发异常。
 	 */
 	private static class StreamingServletServerHttpResponse implements ServerHttpResponse {
 

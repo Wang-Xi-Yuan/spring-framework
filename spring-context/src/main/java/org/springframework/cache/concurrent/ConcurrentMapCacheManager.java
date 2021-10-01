@@ -36,8 +36,8 @@ import org.springframework.lang.Nullable;
  * dynamic creation of further cache regions at runtime.
  *
  * <p>Note: This is by no means a sophisticated CacheManager; it comes with no
- * cache configuration options. However, it may be useful for testing or simple
- * caching scenarios. For advanced local caching needs, consider
+ * cache configuration options. However, it may be useful for testing or simple caching scenarios.
+ *  For advanced local caching needs, consider
  * {@link org.springframework.cache.jcache.JCacheCacheManager},
  * {@link org.springframework.cache.ehcache.EhCacheCacheManager},
  * {@link org.springframework.cache.caffeine.CaffeineCacheManager}.

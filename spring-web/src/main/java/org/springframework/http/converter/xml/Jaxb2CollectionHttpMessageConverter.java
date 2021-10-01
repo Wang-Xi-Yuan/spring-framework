@@ -51,7 +51,7 @@ import org.springframework.util.xml.StaxUtils;
 
 /**
  * An {@code HttpMessageConverter} that can read XML collections using JAXB2.
- *
+ * Java Architecture for XML Binding
  * <p>This converter can read {@linkplain Collection collections} that contain classes
  * annotated with {@link XmlRootElement} and {@link XmlType}. Note that this converter
  * does not support writing.

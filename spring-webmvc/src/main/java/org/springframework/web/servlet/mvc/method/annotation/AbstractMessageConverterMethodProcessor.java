@@ -176,8 +176,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			body = value.toString();
 			valueType = String.class;
 			targetType = String.class;
-		}
-		else {
+		}else {
 			body = value;
 			valueType = getReturnValueType(body, returnType);
 			targetType = GenericTypeResolver.resolveType(getGenericType(returnType), returnType.getContainingClass());
@@ -210,8 +209,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 				logger.debug("Found 'Content-Type:" + contentType + "' in response");
 			}
 			selectedMediaType = contentType;
-		}
-		else {
+		}else {
 			HttpServletRequest request = inputMessage.getServletRequest();
 			List<MediaType> acceptableTypes = getAcceptableMediaTypes(request);
 			List<MediaType> producibleTypes = getProducibleMediaTypes(request, valueType, targetType);

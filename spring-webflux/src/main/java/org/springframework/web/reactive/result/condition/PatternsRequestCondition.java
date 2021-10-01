@@ -91,7 +91,7 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 	}
 
 	/**
-	 * Return the mapping paths that are not patterns.
+	 * Return the mapping paths that are not patterns. 返回非模式的映射路径。
 	 * @since 5.3
 	 */
 	public Set<String> getDirectPaths() {
@@ -128,8 +128,7 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 		}
 		else if (isEmptyPathMapping()) {
 			return other;
-		}
-		else {
+		}else {
 			SortedSet<PathPattern> combined = new TreeSet<>();
 			for (PathPattern pattern1 : this.patterns) {
 				for (PathPattern pattern2 : other.patterns) {

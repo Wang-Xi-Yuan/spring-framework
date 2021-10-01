@@ -43,7 +43,7 @@ import org.springframework.web.util.WebUtils;
  * @since 22.11.2003
  * @see org.springframework.web.servlet.DispatcherServlet
  */
-public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionResolver {
+public class  SimpleMappingExceptionResolver extends AbstractHandlerExceptionResolver {
 
 	/** The default name of the exception attribute: "exception". */
 	public static final String DEFAULT_EXCEPTION_ATTRIBUTE = "exception";
@@ -185,18 +185,18 @@ public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionReso
 	protected ModelAndView doResolveException(
 			HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex) {
 
-		// Expose ModelAndView for chosen error view.
+		// 确定视图名称。Expose ModelAndView for chosen error view.
 		String viewName = determineViewName(ex, request);
 		if (viewName != null) {
 			// Apply HTTP status code for error views, if specified.
 			// Only apply it if we're processing a top-level request.
+			// 根据视图名称去状态码表中确定响应状态码
 			Integer statusCode = determineStatusCode(request, viewName);
 			if (statusCode != null) {
 				applyStatusCodeIfPossible(request, response, statusCode);
 			}
 			return getModelAndView(viewName, ex, request);
-		}
-		else {
+		}else {
 			return null;
 		}
 	}
@@ -213,6 +213,7 @@ public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionReso
 	@Nullable
 	protected String determineViewName(Exception ex, HttpServletRequest request) {
 		String viewName = null;
+		// 不包含的异常数组
 		if (this.excludedExceptions != null) {
 			for (Class<?> excludedEx : this.excludedExceptions) {
 				if (excludedEx.equals(ex.getClass())) {
@@ -220,11 +221,11 @@ public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionReso
 				}
 			}
 		}
-		// Check for specific exception mappings.
+		// 检查特定的异常映射。Check for specific exception mappings.
 		if (this.exceptionMappings != null) {
 			viewName = findMatchingViewName(this.exceptionMappings, ex);
 		}
-		// Return default error view else, if defined.
+		// 如果定义了，返回默认错误视图。Return default error view else, if defined.
 		if (viewName == null && this.defaultErrorView != null) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Resolving to default view '" + this.defaultErrorView + "'");
@@ -248,6 +249,7 @@ public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionReso
 		int deepest = Integer.MAX_VALUE;
 		for (Enumeration<?> names = exceptionMappings.propertyNames(); names.hasMoreElements();) {
 			String exceptionMapping = (String) names.nextElement();
+			// depth =0 表示刚好找到；depth =-1 表示没找到，这是一个递归方法，会一直沿着异常的继承结构向上找，每向上一层，depth+1
 			int depth = getDepth(exceptionMapping, ex);
 			if (depth >= 0 && (depth < deepest || (depth == deepest &&
 					dominantMapping != null && exceptionMapping.length() > dominantMapping.length()))) {

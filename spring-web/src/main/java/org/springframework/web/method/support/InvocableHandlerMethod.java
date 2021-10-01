@@ -158,8 +158,11 @@ public class InvocableHandlerMethod extends HandlerMethod {
 		Object[] args = new Object[parameters.length];
 		for (int i = 0; i < parameters.length; i++) {
 			MethodParameter parameter = parameters[i];
+			// 初始化此方法参数的参数名称发现。当方法中调用getParameterName方法依赖的就是parameterNameDiscoverer
 			parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
+			// 获取请求参数
 			args[i] = findProvidedArgument(parameter, providedArgs);
+			// 说明已经被解析过了
 			if (args[i] != null) {
 				continue;
 			}
@@ -167,9 +170,9 @@ public class InvocableHandlerMethod extends HandlerMethod {
 				throw new IllegalStateException(formatArgumentError(parameter, "No suitable resolver"));
 			}
 			try {
+				// 找到支持此参数的解析器进行解析
 				args[i] = this.resolvers.resolveArgument(parameter, mavContainer, request, this.dataBinderFactory);
-			}
-			catch (Exception ex) {
+			}catch (Exception ex) {
 				// Leave stack trace for later, exception may actually be resolved and handled...
 				if (logger.isDebugEnabled()) {
 					String exMsg = ex.getMessage();

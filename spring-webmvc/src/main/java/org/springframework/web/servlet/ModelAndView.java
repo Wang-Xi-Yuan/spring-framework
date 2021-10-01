@@ -59,6 +59,7 @@ public class ModelAndView {
 	private HttpStatus status;
 
 	/** Indicates whether or not this instance has been cleared with a call to {@link #clear()}. */
+	// 指示是否已通过调用{@link #clear()}清除此实例。
 	private boolean cleared = false;
 
 
@@ -316,8 +317,8 @@ public class ModelAndView {
 	/**
 	 * Clear the state of this ModelAndView object.
 	 * The object will be empty afterwards.
-	 * <p>Can be used to suppress rendering of a given ModelAndView object
-	 * in the {@code postHandle} method of a HandlerInterceptor.
+	 * <p>Can be used to suppress rendering of a given ModelAndView object in the {@code postHandle} method of a HandlerInterceptor.
+	 *
 	 * @see #isEmpty()
 	 * @see HandlerInterceptor#postHandle
 	 */
@@ -337,7 +338,7 @@ public class ModelAndView {
 
 	/**
 	 * Return whether this ModelAndView object is empty as a result of a call to {@link #clear}
-	 * i.e. whether it does not hold any view and does not contain a model.
+	 * i.e. whether it does not hold any view and does not contain a model. 它是否持有任何视图和不包含模型。
 	 * <p>Returns {@code false} if any additional state was added to the instance
 	 * <strong>after</strong> the call to {@link #clear}.
 	 * @see #clear()

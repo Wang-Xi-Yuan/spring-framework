@@ -257,6 +257,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 
 	/**
 	 * Return whether redirects should stay compatible with HTTP 1.0 clients.
+	 * 返回重定向是否应该与HTTP 1.0客户端兼容。
 	 */
 	protected boolean isRedirectHttp10Compatible() {
 		return this.redirectHttp10Compatible;
@@ -461,12 +462,12 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	@Override
 	protected View createView(String viewName, Locale locale) throws Exception {
 		// If this resolver is not supposed to handle the given view,
-		// return null to pass on to the next resolver in the chain.
+		// return null to pass on to the next resolver in the chain.如果这个解析器不应该处理给定的视图，返回null传递给链中的下一个解析器。
 		if (!canHandle(viewName, locale)) {
 			return null;
 		}
 
-		// Check for special "redirect:" prefix.
+		// Check for special "redirect:" prefix.检查“redirect:”前缀。
 		if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
 			String redirectUrl = viewName.substring(REDIRECT_URL_PREFIX.length());
 			RedirectView view = new RedirectView(redirectUrl,
@@ -478,14 +479,14 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 			return applyLifecycleMethods(REDIRECT_URL_PREFIX, view);
 		}
 
-		// Check for special "forward:" prefix.
+		// Check for special "forward:" prefix.检查“forward:”前缀。
 		if (viewName.startsWith(FORWARD_URL_PREFIX)) {
 			String forwardUrl = viewName.substring(FORWARD_URL_PREFIX.length());
 			InternalResourceView view = new InternalResourceView(forwardUrl);
 			return applyLifecycleMethods(FORWARD_URL_PREFIX, view);
 		}
 
-		// Else fall back to superclass implementation: calling loadView.
+		// Else fall back to superclass implementation: calling loadView.否则回到超类实现:调用loadView。
 		return super.createView(viewName, locale);
 	}
 
@@ -516,6 +517,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 
 	/**
 	 * Instantiate the specified view class.
+	 * 实例化指定的视图类。
 	 * <p>The default implementation uses reflection to instantiate the class.
 	 * @return a new instance of the view class
 	 * @since 5.3
@@ -597,6 +599,8 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	/**
 	 * Apply the containing {@link ApplicationContext}'s lifecycle methods
 	 * to the given {@link View} instance, if such a context is available.
+	 *
+	 * 应用包含ApplicationContext的生命周期方法
 	 * @param viewName the name of the view
 	 * @param view the freshly created View instance, pre-configured with
 	 * {@link AbstractUrlBasedView}'s properties
@@ -610,6 +614,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	protected View applyLifecycleMethods(String viewName, AbstractUrlBasedView view) {
 		ApplicationContext context = getApplicationContext();
 		if (context != null) {
+			// 初始化给定的原始bean
 			Object initialized = context.getAutowireCapableBeanFactory().initializeBean(view, viewName);
 			if (initialized instanceof View) {
 				return (View) initialized;

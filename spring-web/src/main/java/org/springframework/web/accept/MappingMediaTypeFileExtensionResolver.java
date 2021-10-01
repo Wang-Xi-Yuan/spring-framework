@@ -33,7 +33,7 @@ import org.springframework.lang.Nullable;
 /**
  * An implementation of {@code MediaTypeFileExtensionResolver} that maintains
  * lookups between file extensions and MediaTypes in both directions.
- *
+ * 在文件扩展名和介质类型之间进行双向查找。
  * <p>Initially created with a map of file extensions and media types.
  * Subsequently subclasses can use {@link #addMapping} to add more mappings.
  *

@@ -458,7 +458,7 @@ public class MethodParameter {
 	}
 
 	/**
-	 * Return the containing class for this method parameter.
+	 * Return the containing class for this method parameter.返回此方法参数的包含类。
 	 * @return a specific containing class (potentially a subclass of the
 	 * declaring class), or otherwise simply the declaring class itself
 	 * @see #getDeclaringClass()
@@ -685,6 +685,7 @@ public class MethodParameter {
 
 	/**
 	 * Initialize parameter name discovery for this method parameter.
+	 * 初始化此方法参数的参数名称发现。
 	 * <p>This method does not actually try to retrieve the parameter name at
 	 * this point; it just allows discovery to happen when the application calls
 	 * {@link #getParameterName()} (if ever).

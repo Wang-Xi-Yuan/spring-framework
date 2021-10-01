@@ -234,6 +234,7 @@ public class SpringCacheAnnotationParser implements CacheAnnotationParser, Seria
 
 	/**
 	 * Provides default settings for a given set of cache operations.
+	 * 为一组给定的缓存操作提供默认设置
 	 */
 	private static class DefaultCacheConfig {
 

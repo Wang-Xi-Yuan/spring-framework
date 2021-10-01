@@ -31,7 +31,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * Resolves method parameters by delegating to a list of registered
  * {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers}.
  * Previously resolved method parameters are cached for faster lookups.
- *
+ * 方法参数解析器 这是使用到组合模式
  * @author Rossen Stoyanchev
  * @author Juergen Hoeller
  * @since 3.1

@@ -399,8 +399,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 				logger.trace("Applying default " + getCacheControl());
 			}
 			applyCacheControl(response, this.cacheControl);
-		}
-		else {
+		}else {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Applying default cacheSeconds=" + this.cacheSeconds);
 			}

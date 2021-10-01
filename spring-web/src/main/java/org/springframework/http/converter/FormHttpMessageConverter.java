@@ -49,8 +49,8 @@ import org.springframework.util.StringUtils;
 
 /**
  * Implementation of {@link HttpMessageConverter} to read and write 'normal' HTML
- * forms and also to write (but not read) multipart data (e.g. file uploads).
- *
+ * forms and also to write (but not read) multipart daa (e.g. file uploads).
+ * 读写正常表单 同时也支持文件上传
  * <p>In other words, this converter can read and write the
  * {@code "application/x-www-form-urlencoded"} media type as
  * {@link MultiValueMap MultiValueMap&lt;String, String&gt;}, and it can also
@@ -75,7 +75,8 @@ import org.springframework.util.StringUtils;
  * MIME parts. By default, basic converters are registered for byte array,
  * {@code String}, and {@code Resource}. These can be overridden via
  * {@link #setPartConverters} or augmented via {@link #addPartConverter}.
- *
+ * 当写multipart数据时，这个转换器将使用其他消息转换器对各部分进行转换，默认的注册的有byte array
+ * String，Resource
  * <h3>Examples</h3>
  *
  * <p>The following snippet shows how to submit an HTML form using the
@@ -301,6 +302,7 @@ public class FormHttpMessageConverter implements HttpMessageConverter<MultiValue
 
 	@Override
 	public boolean canRead(Class<?> clazz, @Nullable MediaType mediaType) {
+		// 必须是MultiValueMap或其子类
 		if (!MultiValueMap.class.isAssignableFrom(clazz)) {
 			return false;
 		}
@@ -350,8 +352,7 @@ public class FormHttpMessageConverter implements HttpMessageConverter<MultiValue
 			int idx = pair.indexOf('=');
 			if (idx == -1) {
 				result.add(URLDecoder.decode(pair, charset.name()), null);
-			}
-			else {
+			}else {
 				String name = URLDecoder.decode(pair.substring(0, idx), charset.name());
 				String value = URLDecoder.decode(pair.substring(idx + 1), charset.name());
 				result.add(name, value);
@@ -380,6 +381,7 @@ public class FormHttpMessageConverter implements HttpMessageConverter<MultiValue
 		}
 		for (List<?> values : map.values()) {
 			for (Object value : values) {
+				// 这里判断只判断了 value不为空且不是String
 				if (value != null && !(value instanceof String)) {
 					return true;
 				}
@@ -403,8 +405,7 @@ public class FormHttpMessageConverter implements HttpMessageConverter<MultiValue
 		if (outputMessage instanceof StreamingHttpOutputMessage) {
 			StreamingHttpOutputMessage streamingOutputMessage = (StreamingHttpOutputMessage) outputMessage;
 			streamingOutputMessage.setBody(outputStream -> StreamUtils.copy(bytes, outputStream));
-		}
-		else {
+		}else {
 			StreamUtils.copy(bytes, outputMessage.getBody());
 		}
 	}
@@ -664,6 +665,7 @@ public class FormHttpMessageConverter implements HttpMessageConverter<MultiValue
 
 	/**
 	 * Inner class to avoid a hard dependency on the JavaMail API.
+	 * 内部类，以避免对JavaMail API的严格依赖。
 	 */
 	private static class MimeDelegate {
 
